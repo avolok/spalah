@@ -1,0 +1,61 @@
+name: spalah CI
+
+on:
+  pull_request:
+    paths:
+      - "spalah/**"
+      - "tests/**"
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  precommit:
+    name: CI
+    runs-on: ubuntu-latest
+    env:
+      working-directory: .
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Run pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit
+        working-directory: ${{env.working-directory}}
+
+  Pytest:
+    name: Pytest
+    runs-on: ubuntu-latest
+    needs: Precommit
+    env:
+      working-directory: .
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: Install spalah dependencies
+        run: pip install . -r requirements_dev.txt
+        working-directory: ${{env.working-directory}}
+
+      - name: Test spalah package
+        run: pytest tests/
+        working-directory: ${{env.working-directory}}
+
+      - name: Upload pytest test results
+        uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        with:
+          name: test-coverage
+          path: test-coverage.xml
