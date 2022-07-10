@@ -28,6 +28,7 @@ jobs:
       - name: Get list of changed files
         id: get_list_of_files
         run:  |
+          git fetch origin main:refs/remotes/origin/main
           FILES_CHANGED=$(git diff --name-only origin/main)
           
           echo "Changed files:"
