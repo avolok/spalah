@@ -25,12 +25,12 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: Get list of changed files
+      - name: Get the list of changed files
         id: get_list_of_files
         run:  |
           git fetch origin main:refs/remotes/origin/main
           FILES_CHANGED=$(git diff --name-only origin/main)
-          
+
           echo "Changed files:"
           echo "$FILES_CHANGED"
 
@@ -54,5 +54,3 @@ jobs:
         with:
           name: test-coverage
           path: test-coverage.xml
-
-      
