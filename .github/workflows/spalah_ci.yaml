@@ -49,11 +49,3 @@ jobs:
 
       - name: Comment coverage
         uses: coroo/pytest-coverage-commentator@v1.0.2
-
-
-      - name: Upload pytest test results
-        uses: actions/upload-artifact@v2
-        if: ${{ always() }}
-        with:
-          name: test-coverage
-          path: coverage.xml
