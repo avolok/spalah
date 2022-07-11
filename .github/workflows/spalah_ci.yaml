@@ -45,8 +45,11 @@ jobs:
         working-directory: ${{env.working-directory}}
 
       - name: Test spalah package
-        run: pytest --cov-report xml  --cov=spalah tests/
-        working-directory: ${{env.working-directory}}
+        run: pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
+
+      - name: Comment coverage
+        uses: coroo/pytest-coverage-commentator@v1.0.2
+
 
       - name: Upload pytest test results
         uses: actions/upload-artifact@v2
