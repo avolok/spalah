@@ -14,12 +14,6 @@ repos:
       - id: check-yaml
       - id: check-ast
       - id: flake8
-  - repo: https://github.com/pycqa/isort
-    rev: 5.9.1
-    hooks:
-      - id: isort
-        args: ["--filter-files"]
-        files: \.py$
   - repo: https://github.com/ambv/black
     rev: 22.3.0 
     hooks:
