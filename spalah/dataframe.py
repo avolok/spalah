@@ -193,11 +193,14 @@ def slice_dataframe(
     return result
 
 
-def schema_as_flat_list(schema: T.StructType, column_prefix: str = None):
+def schema_as_flat_list(
+    schema: T.StructType, include_datatype: bool = False, column_prefix: str = None
+) -> list:
     """Generates the flatten list of columns from the complex dataframe schema
 
     Args:
         schema (StructType): input dataframe's schema
+        include_type (bool, optional): Include column types
         column_prefix (str, optional): The column name prefix. Defaults to None.
 
     Returns:
@@ -218,14 +221,22 @@ def schema_as_flat_list(schema: T.StructType, column_prefix: str = None):
             column_data_type = column_data_type.elementType
 
         if isinstance(column_data_type, T.StructType):
-            columns += schema_as_flat_list(column_data_type, column_prefix=name)
+            columns += schema_as_flat_list(
+                column_data_type, include_datatype=include_datatype, column_prefix=name
+            )
         else:
-            columns.append(name)
+            if include_datatype:
+                result = name, str(column_data_type)
+            else:
+                result = name
+
+            columns.append(result)
 
     return columns
 
 
 def script_dataframe(input_dataframe: DataFrame, suppress_print_output: bool = False) -> str:
+
     """Generates a script of a dataframe"""
 
     MAX_ROWS_IN_SCRIPT = 20
