@@ -45,7 +45,7 @@ jobs:
         working-directory: ${{env.working-directory}}
 
       - name: Test spalah package
-        run: pytest --cov-report html --cov-report xml  --cov=spalah tests/
+        run: pytest --cov-report xml  --cov=spalah tests/
         working-directory: ${{env.working-directory}}
 
       - name: Upload pytest test results
