@@ -4,12 +4,6 @@
 files: ^spalah|tests|.github
 exclude: 'docs'
 repos:
-  - repo: https://github.com/pycqa/isort
-    rev: 5.9.1
-    hooks:
-      - id: isort
-        args: ["--filter-files"]
-        files: \.py$
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.0.0
     hooks:
