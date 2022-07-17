@@ -1,7 +1,7 @@
 import pytest
-from pyspark.sql import DataFrame, Row
+from pyspark.sql import Row
 
-from spalah.dataframe import schema_as_flat_list, script_dataframe, slice_dataframe
+from spalah.dataframe import slice_dataframe
 
 
 @pytest.mark.parametrize(
@@ -134,97 +134,35 @@ def test_slice_dataframe(
         columns_to_include=columns_to_include,
         columns_to_exclude=columns_to_exclude,
         nullify_only=nullify_only,
+        debug=True,
     ).first()
 
     assert actual == expected, assert_message
 
 
-@pytest.mark.parametrize(
-    "assert_message,input_dataset,include_datatype,expected",
-    [
-        (
-            "Must return all columns, including nested attributes"
-            "of the complex dataset as the list",
-            "nested_dataset",
-            False,
-            [
-                "column_a",
-                "column_b",
-                "column_c.column_c_1",
-                "column_c.column_c_2.c_2_1",
-                "column_c.column_c_2.c_2_2",
-                "column_c.column_c_2.c_2_3",
-            ],
-        ),
-        (
-            "Must return all columns of the flat dataset as the list",
-            "flat_dataset",
-            False,
-            ["a", "b", "c", "d", "e"],
-        ),
-        (
-            "Must return all columns, including nested attributes of the"
-            "complex dataset as the list and the column data type",
-            "nested_dataset",
-            True,
-            [
-                ("column_a", "IntegerType"),
-                ("column_b", "DecimalType(2,1)"),
-                ("column_c.column_c_1", "StringType"),
-                ("column_c.column_c_2.c_2_1", "StringType"),
-                ("column_c.column_c_2.c_2_2", "StringType"),
-                ("column_c.column_c_2.c_2_3", "StringType"),
-            ],
-        ),
-        (
-            "Must return all columns of the flat dataset as the list and the column data type",
-            "flat_dataset",
-            True,
-            [
-                ("a", "LongType"),
-                ("b", "DoubleType"),
-                ("c", "StringType"),
-                ("d", "DateType"),
-                ("e", "TimestampType"),
-            ],
-        ),
-    ],
-    ids=[
-        "nested: without data types",
-        "flat: without data types",
-        "nested: with data types",
-        "flat: with data types",
-    ],
-)
-def test_schema_as_flat_list(
-    assert_message,
-    input_dataset,
-    include_datatype,
-    expected,
-    request,
-) -> None:
+def test_slice_dataframe_invalid_parameters(request):
+    dataset = request.getfixturevalue("flat_dataset")
 
-    dataset = request.getfixturevalue(input_dataset)
-    actual = schema_as_flat_list(schema=dataset.schema, include_datatype=include_datatype)
-
-    assert actual == expected, assert_message
+    with pytest.raises(Exception) as e:
+        slice_dataframe(
+            input_dataframe=dataset, columns_to_include="a", columns_to_exclude=("b", "c")
+        )
+    assert str(e.value).startswith("'columns_to_include' and 'columns_to_exclude' must be a list")
 
 
-def test_script_dataframe(spark, flat_dataset: DataFrame) -> None:
-    """The input dataset must be scripted and then recreated from the script:
-    |  a|  b|
-    +---+---+
-    |  1|2.0|
-    |  2|3.0|
-    """
-    df_input = flat_dataset.select("a", "b")
+def test_slice_dataframe_invalid_parameters2(request):
+    dataset = request.getfixturevalue("flat_dataset")
 
-    generated_script = script_dataframe(df_input)
+    with pytest.raises(Exception) as e:
+        slice_dataframe(input_dataframe=dataset, columns_to_include=[1, "a", None])
+    assert str(e.value).startswith(
+        "Member of 'columns_to_include' and" " 'columns_to_exclude' must be a string"
+    )
 
-    # dynamically run the script which will generate "outcome_dataframe"
-    loc = {"spark": spark}
-    exec(generated_script, globals(), loc)
 
-    df_outcome = loc["outcome_dataframe"]
+def test_slice_dataframe_invalid_parameters3(request):
+    dataset = request.getfixturevalue("flat_dataset")
 
-    assert df_outcome.collect() == [Row(a=1, b=2.0), Row(a=2, b=3.0)]
+    with pytest.raises(Exception) as e:
+        slice_dataframe(input_dataframe=dataset, columns_to_include=["a"], columns_to_exclude=["a"])
+    assert str(e.value).startswith("At least one column should be listed")
