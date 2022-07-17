@@ -4,7 +4,7 @@
 
 ## v0.2.0 (2022-07-11)
 ### Feature
-* Schema_as_flat_list - add include_datatype ([`68d4c71`](https://github.com/avolok/spalah/commit/68d4c71e99156c00ffe99b20d1d2cb90945b30a2))
+* flatten_schema - add include_datatype ([`68d4c71`](https://github.com/avolok/spalah/commit/68d4c71e99156c00ffe99b20d1d2cb90945b30a2))
 
 ## v0.1.0 (2022-07-10)
 ### Feature
