@@ -14,8 +14,8 @@ NotMatchedColumn = namedtuple("NotMatchedColumn", ["name", "data_type", "reason"
 def __process_schema_node(
     node: T.StructType,
     column_prefix: str = "",
-    columns_to_include: list = [],  # type: ignore
-    columns_to_exclude: list = [],  # type: ignore
+    columns_to_include: Union[list, None] = None,  # type: ignore
+    columns_to_exclude: Union[list, None] = None,  # type: ignore
     nullify_only: bool = False,
     debug: bool = False,
 ) -> Union[F.col, F.lit, None]:
@@ -65,7 +65,7 @@ def __process_schema_node(
     ):
         include_this_node = True
     # If no columns to include specified, then all columns are accepted
-    elif len(columns_to_include) == 0:
+    elif columns_to_include and len(columns_to_include) == 0:
         include_this_node = True
 
     # Structs
@@ -126,8 +126,8 @@ def __process_schema_node(
 
 def slice_dataframe(
     input_dataframe: DataFrame,
-    columns_to_include: list = [],
-    columns_to_exclude: list = [],
+    columns_to_include: Union[list, None] = None,
+    columns_to_exclude: Union[list, None] = None,
     nullify_only: bool = False,
     debug: bool = False,
 ) -> DataFrame:
@@ -151,6 +151,12 @@ def slice_dataframe(
 
     projection = []
     _schema = input_dataframe.schema
+
+    if not columns_to_include:
+        columns_to_include = []
+
+    if not columns_to_exclude:
+        columns_to_exclude = []
 
     if not (type(columns_to_include) is list and type(columns_to_exclude) is list):
         raise TypeError("'columns_to_include' and 'columns_to_exclude' must be a list")
