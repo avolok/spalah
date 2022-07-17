@@ -55,7 +55,8 @@ def __process_schema_node(
         ]
     ):
         include_this_node = False
-    # If no columns to include specified, then filter out other columns
+    # If columns to include specified, then filter out other columns
+    # that are not in the list
     elif columns_to_include and any(
         [
             x
@@ -65,7 +66,7 @@ def __process_schema_node(
     ):
         include_this_node = True
     # If no columns to include specified, then all columns are accepted
-    elif columns_to_include and len(columns_to_include) == 0:
+    elif columns_to_include is not None and len(columns_to_include) == 0:
         include_this_node = True
 
     # Structs
