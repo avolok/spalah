@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.0 (2022-07-17)
+### Feature
+* Add SchemaComparer ([`214fe4d`](https://github.com/avolok/spalah/commit/214fe4d9d7b8656181cb50d674f17cbd045bdf6b))
+
+### Fix
+* Slice_dataframe filtering logic ([`6926c98`](https://github.com/avolok/spalah/commit/6926c983e692ecb25cd8b812066acf176db65753))
+* Slice_dataframe changed default prm values ([`4d9fe91`](https://github.com/avolok/spalah/commit/4d9fe916b1b08d7660763d8f95d64ffa9188890d))
+
 ## v0.2.0 (2022-07-11)
 ### Feature
 * flatten_schema - add include_datatype ([`68d4c71`](https://github.com/avolok/spalah/commit/68d4c71e99156c00ffe99b20d1d2cb90945b30a2))
