@@ -1,9 +1,14 @@
 from pprint import pformat, pprint
-from typing import Union
+from typing import Union, List, Set
 
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
+from collections import namedtuple
+
+
+MatchedColumn = namedtuple("MatchedColumn", ["name", "data_type"])
+NotMatchedColumn = namedtuple("NotMatchedColumn", ["name", "data_type", "reason"])
 
 
 def __process_schema_node(
@@ -186,15 +191,17 @@ def slice_dataframe(
     if len(result.columns) == 0:
         raise ValueError(
             "At least one column should be listed in the "
-            + "included/excluded attributes of the datalocker config "
+            + "columns_to_include/columns_to_exclude attributes "
             + "and included column should not directly overlap with excluded one"
         )
 
     return result
 
 
-def schema_as_flat_list(
-    schema: T.StructType, include_datatype: bool = False, column_prefix: str = None
+def flatten_schema(
+    schema: T.StructType,
+    include_datatype: bool = False,
+    column_prefix: Union[str, None] = None,
 ) -> list:
     """Generates the flatten list of columns from the complex dataframe schema
 
@@ -206,6 +213,9 @@ def schema_as_flat_list(
     Returns:
         The list of (flattened) column names
     """
+
+    if not isinstance(schema, T.StructType):
+        raise TypeError("Parameter schema must be a StructType")
 
     columns = []
 
@@ -221,8 +231,10 @@ def schema_as_flat_list(
             column_data_type = column_data_type.elementType
 
         if isinstance(column_data_type, T.StructType):
-            columns += schema_as_flat_list(
-                column_data_type, include_datatype=include_datatype, column_prefix=name
+            columns += flatten_schema(
+                column_data_type,
+                include_datatype=include_datatype,
+                column_prefix=name,
             )
         else:
             if include_datatype:
@@ -278,3 +290,190 @@ def script_dataframe(input_dataframe: DataFrame, suppress_print_output: bool = F
         print(__final_script)
 
     return __final_script
+
+
+class SchemaComparer:
+    def __init__(self, source_schema: T.StringType, target_schema: T.StringType) -> None:
+        self._source = self.__import_schema(source_schema)
+        self._target = self.__import_schema(target_schema)
+        self.matched: List[tuple] = list()
+        self.not_matched: List[tuple] = list()
+
+    def __import_schema(self, input_schema: T.StructType) -> Set[tuple]:
+        """Import StructType as the flatten set of tuples: (column_name, data_type)
+
+        Args:
+            input_schema (T.StructType): Schema to process
+
+        Raises:
+            TypeError: if input schema has a type: DataFrame
+            TypeError: if input schema hasn't a type: StructType
+
+        Returns:
+            Set[tuple]: Set of tuples: (column_name, data_type)
+        """
+
+        if isinstance(input_schema, DataFrame):
+            raise TypeError(
+                "One of 'source_schema or 'target_schema' passed as a DataFrame. "
+                "Use DataFrame.schema instead"
+            )
+        elif not isinstance(input_schema, T.StructType):
+            raise TypeError(
+                "Parameters 'source_schema and 'target_schema' must have a type: StructType"
+            )
+
+        return set(flatten_schema(input_schema, True))
+
+    def __match_by_name_and_type(
+        self, source: Set[tuple] = set(), target: Set[tuple] = set()
+    ) -> Set[tuple]:
+        """Matches columns in source and target schemas by name and data type
+
+        Args:
+            source (Set[tuple], optional): Flattened source schema. Defaults to set().
+            target (Set[tuple], optional): Flattened target schema. Defaults to set().
+
+        Returns:
+            Set[tuple]: Fully matched columns as a set of tuples: (column_name, data_type)
+        """
+
+        # If source and target is not provided, use class attributes as the input
+        _source = self._source if not source else source
+        _target = self._target if not target else target
+
+        result = _source & _target
+
+        # Remove matched values of case 1 from further processing
+        self.__remove_matched_by_name_and_type(result)
+
+        if not (source and target):
+            self.__populate_matched(result)
+
+        return result
+
+    def __remove_matched_by_name_and_type(self, subtract_value: Set[tuple]) -> None:
+        """Removes fully matched columns from the further processing
+
+        Args:
+            subtract_value (Set[tuple]): Set of matched columns
+        """
+
+        self._source = self._source - subtract_value
+        self._target = self._target - subtract_value
+
+    def __remove_matched_by_name(self, subtract_value: Set[tuple]) -> None:
+        """Removes matched by name columns from the further processing
+
+        Args:
+            subtract_value (Set[tuple]): Set of matched column
+        """
+
+        def _remove(input_value: Set[tuple], subtract_value: Set[tuple]) -> Set[tuple]:
+            """Internal helper for removal of Tuples by the first member"""
+            return {
+                (x, y)
+                for (x, y) in input_value
+                if not x.lower() in ([z[0].lower() for z in subtract_value])
+            }
+
+        self._source = _remove(self._source, subtract_value)  # type: ignore
+        self._target = _remove(self._target, subtract_value)  # type: ignore
+
+    def __lower_column_names(self, base_value: Set[tuple]) -> Set[tuple]:
+        """Lower-case all column names of the input set
+
+        Args:
+            base_value (Set[tuple]): Input set of columns
+
+        Returns:
+            Set[tuple]: Output set of columns with lower-case column names
+        """
+        return {(x.lower(), y) for (x, y) in base_value}
+
+    def __match_by_name_type_excluding_case(self) -> None:
+        """Matches columns in source and target schemas by name and data type
+        without taking into account column name case
+        """
+
+        _source_lowered = self.__lower_column_names(self._source)
+        _target_lowered = self.__lower_column_names(self._target)
+
+        result = self.__match_by_name_and_type(_source_lowered, _target_lowered)
+
+        # Remove matched values of case 2 from further processing
+        self.__remove_matched_by_name(result)
+
+        self.__populate_not_matched(
+            result,
+            "The column exists in source and target schemas but it's name is case-mismatched",
+        )
+
+    def __match_by_name_but_not_type(self) -> None:
+        """Matches columns in source and target schemas only by column name"""
+
+        x = dict(self._source)  # type: ignore
+        y = dict(self._target)  # type: ignore
+
+        result = {(k, f"{x[k]} <=> {y[k]}") for k in x if k in y and x[k] != y[k]}
+
+        # Remove matched values of case 3 from further processing
+        self.__remove_matched_by_name(result)  # type: ignore
+
+        self.__populate_not_matched(
+            result,  # type: ignore
+            "The column exists in source and target schemas but it is not matched by a data type",
+        )
+
+    def __process_remaining_non_matched_columns(self) -> None:
+        """Process remaining not matched columns"""
+
+        self.__populate_not_matched(self._source, "The column exists only in the source schema")
+
+        self.__populate_not_matched(self._target, "The column exists only in the target schema")
+
+        self.__remove_matched_by_name(self._source)
+        self.__remove_matched_by_name(self._target)
+
+    def __populate_matched(self, input_value: Set[tuple]) -> None:
+        """Populate class property 'matched' with a list of fully matched columns
+
+        Args:
+            input_value (Set[tuple]): The set of tuples with a list of column names and data types
+        """
+
+        for match in input_value:
+            self.matched.append(MatchedColumn(name=match[0], data_type=match[1]))
+
+    def __populate_not_matched(self, input_value: Set[tuple], reason: str) -> None:
+        """Populate class property 'not_matched' with a list of columns that didn't match for some
+        reason with included an actual reason
+
+        Args:
+            input_value (Set[tuple]): The set of tuples with a list of column names and data types
+            reason (str): Reason for not match
+        """
+
+        for match in input_value:
+            self.not_matched.append(
+                NotMatchedColumn(name=match[0], data_type=match[1], reason=reason)
+            )
+
+    def compare(self) -> None:
+        """
+        Compares the source and target schemas and populates properties
+        'matched' and 'not_matched'
+        """
+
+        # Case 1: find columns that are matched by name and type and remove them
+        # from further processing
+        self.__match_by_name_and_type()
+
+        # Case 2: find columns that match mismatched by name due to case: ID <-> Id
+        self.__match_by_name_type_excluding_case()
+
+        # Case 3: Find columns matched by name, but not by data type
+        self.__match_by_name_but_not_type()
+
+        # Case 4: Find columns that exists only in the source or target
+        self.__process_remaining_non_matched_columns()
