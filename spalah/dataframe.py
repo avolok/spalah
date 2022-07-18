@@ -254,7 +254,7 @@ def flatten_schema(
     return columns
 
 
-def script_dataframe(input_dataframe: DataFrame, suppress_print_output: bool = False) -> str:
+def script_dataframe(input_dataframe: DataFrame, suppress_print_output: bool = True) -> str:
 
     """Generates a script of a dataframe"""
 
