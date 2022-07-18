@@ -15,7 +15,9 @@ pip install spalah
 ### Module: dataframe
 This module contains various dataframe specific functions and classes, like `SchemaComparer`, `script_dataframe`, `slice_dataframe` etc. 
 
+
 ### SchemaComparer
+
 Let's define a source and target dataframes that will be used further in the schema comparison. The target schema contains a few adjustments that the class to catch and display
 ```python
 from pyspark.sql import SparkSession
@@ -167,7 +169,6 @@ __schema = {'type': 'struct', 'fields': [{'name': 'ID', 'type': 'integer', 'null
 
 outcome_dataframe = spark.createDataFrame(__data, StructType.fromJson(__schema))
 ```
-
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
