@@ -15,7 +15,7 @@ pip install spalah
 ### Module: dataframe
 This module contains various dataframe specific functions and classes, like `SchemaComparer`, `script_dataframe`, `slice_dataframe` etc. 
 
-#### SchemaComparer
+### SchemaComparer
 Let's define a source and target dataframes that will be used further in the schema comparison. The target schema contains a few adjustments that the class to catch and display
 ```python
 from pyspark.sql import SparkSession
@@ -140,6 +140,32 @@ flatten_schema(
     ('Address.Line1', 'StringType'),
     ('Address.Line2', 'StringType')
 ]
+```
+
+### script_dataframe
+
+Pass the dataframe to get the `script_dataframe` to get the script of it that can be ported to another environment. The function can generate the script for dataframes with up to 20 rows. Use `.limit(20)` to reduce the number of rows when needed
+
+```python
+from spalah.dataframe import script_dataframe
+
+script = script_dataframe(df)
+
+print(script)
+```
+output:
+```python
+from pyspark.sql import Row
+import datetime
+from decimal import Decimal
+from pyspark.sql.types import *
+
+# Scripted data and schema:
+__data = [Row(ID=1, Name='John', Address=Row(Line1='line1', Line2='line2'))]
+
+__schema = {'type': 'struct', 'fields': [{'name': 'ID', 'type': 'integer', 'nullable': False, 'metadata': {}}, {'name': 'Name', 'type': 'string', 'nullable': False, 'metadata': {}}, {'name': 'Address', 'type': {'type': 'struct', 'fields': [{'name': 'Line1', 'type': 'string', 'nullable': False, 'metadata': {}}, {'name': 'Line2', 'type': 'string', 'nullable': False, 'metadata': {}}]}, 'nullable': False, 'metadata': {}}]}
+
+outcome_dataframe = spark.createDataFrame(__data, StructType.fromJson(__schema))
 ```
 
 
