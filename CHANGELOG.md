@@ -2,6 +2,14 @@
 
 <!--next-version-placeholder-->
 
+## v0.3.1 (2022-08-05)
+### Fix
+* Script_dataframe, change default value ([#8](https://github.com/avolok/spalah/issues/8)) ([`3608dc3`](https://github.com/avolok/spalah/commit/3608dc3143f0a708c4c3d4d0b95c903f46246a6c))
+
+### Documentation
+* Add exampe of use for flatten_schema ([`b50744c`](https://github.com/avolok/spalah/commit/b50744c4f6a3db6c9b6a0af2aecd0773e9b65c09))
+* Add readme for SchemaComparer ([`bfc86e0`](https://github.com/avolok/spalah/commit/bfc86e071a412e2bfedd0e30a08d877e60cfb6e3))
+
 ## v0.3.0 (2022-07-17)
 ### Feature
 * Add SchemaComparer ([`214fe4d`](https://github.com/avolok/spalah/commit/214fe4d9d7b8656181cb50d674f17cbd045bdf6b))
