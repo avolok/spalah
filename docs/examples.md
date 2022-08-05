@@ -159,3 +159,59 @@ outcome_dataframe = spark.createDataFrame(__data, StructType.fromJson(__schema))
 ```
 
 
+### slice_dataframe
+Slice the schema of the dataframe by selecting which attributes must be included and/or excluded.
+The function supports also complex structures and can be helpful for cases when sensitive/PII attributes must be cut off during the data transformation:
+```python
+from spalah.dataframe import slice_dataframe
+
+df = spark.sql(
+    'SELECT 1 as ID, "John" AS Name, struct("line1" AS Line1, "line2" AS Line2) AS Address'
+)
+df.printSchema()
+
+""" output:
+root
+ |-- ID: integer (nullable = false)
+ |-- Name: string (nullable = false)
+ |-- Address: struct (nullable = false)
+ |    |-- Line1: string (nullable = false)
+ |    |-- Line2: string (nullable = false)
+"""
+
+# Create a new dataframe by cutting of root and nested attributes
+df_result = slice_dataframe(
+    input_dataframe=df,
+    columns_to_include=["Name", "Address"],
+    columns_to_exclude=["Address.Line2"]
+)
+df_result.printSchema()
+
+""" output:
+root
+ |-- Name: string (nullable = false)
+ |-- Address: struct (nullable = false)
+ |    |-- Line1: string (nullable = false)
+"""
+```
+
+Alternatively, excluded columns can be nullified instead of removed:
+```python
+df_result = slice_dataframe(
+    input_dataframe=df,
+    columns_to_include=["Name", "Address"],
+    columns_to_exclude=["Address.Line2"],
+    nullify_only=True
+)
+
+df_result.show()
+
+""" output:
++----+----+-------------+
+|  ID|Name|      Address|
++----+----+-------------+
+|null|John|{line1, null}|
++----+----+-------------+
+
+"""
+```

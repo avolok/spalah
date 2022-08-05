@@ -147,7 +147,7 @@ root
 """
 ```
 
-Check for more information and examples in the [usage](docs/examples.md) document and related [notebook](docs/usage.ipynb)
+Check for more information an [examples](docs/examples.md) page and related [notebook](docs/usage.ipynb)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
