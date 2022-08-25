@@ -6,7 +6,7 @@ The word "spalah" means "spark" in Ukrainian 🇺🇦
 
 ## Installation
 
-Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
+Use the package manager [pip](https://pip.pypa.io/en/stable/) to install spalah.
 
 ```bash
 pip install spalah
