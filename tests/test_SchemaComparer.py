@@ -34,29 +34,29 @@ def test_SchemaComparer_compare_different_schemas(flat_dataset: DataFrame) -> No
     schema_comparer.compare()
 
     assert set(schema_comparer.matched) == {
-        MatchedColumn(name="d", data_type="DateType"),
-        MatchedColumn(name="e", data_type="TimestampType"),
+        MatchedColumn(name="d", data_type="DateType()"),
+        MatchedColumn(name="e", data_type="TimestampType()"),
     }
 
     assert set(schema_comparer.not_matched) == {
         NotMatchedColumn(
             name="c",
-            data_type="StringType",
+            data_type="StringType()",
             reason="The column exists in source and target schemas but it's name "
             "is case-mismatched",
         ),
         NotMatchedColumn(
             name="b",
-            data_type="DoubleType <=> StringType",
+            data_type="DoubleType() <=> StringType()",
             reason="The column exists in source and target schemas but it is not "
             "matched by a data type",
         ),
         NotMatchedColumn(
-            name="a", data_type="LongType", reason="The column exists only in the source schema"
+            name="a", data_type="LongType()", reason="The column exists only in the source schema"
         ),
         NotMatchedColumn(
             name="z",
-            data_type="StringType",
+            data_type="StringType()",
             reason="The column exists only in the target schema",
         ),
     }
