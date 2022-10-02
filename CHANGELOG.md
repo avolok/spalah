@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.0 (2022-10-02)
+### Feature
+* Add a 'datalake' module ([#11](https://github.com/avolok/spalah/issues/11)) ([`c326926`](https://github.com/avolok/spalah/commit/c3269260a646a9d2297028d1c1d4c871deb67093))
+
 ## v0.3.1 (2022-08-05)
 ### Fix
 * Script_dataframe, change default value ([#8](https://github.com/avolok/spalah/issues/8)) ([`3608dc3`](https://github.com/avolok/spalah/commit/3608dc3143f0a708c4c3d4d0b95c903f46246a6c))
