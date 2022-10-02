@@ -1,6 +1,6 @@
-# Examples of use
+# Examples of use: spalah.dataframe
 
-## Module: dataframe
+
 This module contains various dataframe specific functions and classes, like `SchemaComparer`, `script_dataframe`, `slice_dataframe` etc. 
 
 

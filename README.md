@@ -4,7 +4,7 @@ Spalah is a set of python helpers to deal with PySpark dataframes, transformatio
 
 The word "spalah" means "spark" in Ukrainian 🇺🇦 
 
-## Installation
+# Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install spalah.
 
@@ -12,8 +12,9 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install spalah.
 pip install spalah
 ```
 
-## Examples of use
+# Examples of use
 
+## spalah.dataframe
 ### SchemaComparer
 
 ```python
@@ -147,7 +148,7 @@ root
 """
 ```
 
-Check for more information an [examples](docs/examples.md) page and related [notebook](docs/usage.ipynb)
+Check for more information in [examples: dataframe](docs/examples_dataframe.md), [examples: datalake](docs/examples_datalake.md) pages and related [notebook](docs/usage.ipynb)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

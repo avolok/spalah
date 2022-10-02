@@ -75,7 +75,7 @@ def set_table_properties(
     properties: dict,
     table_path: str = "",
     table_name: str = "",
-    allow_unset: bool = False,
+    keep_existing: bool = True,
     spark_session: Union[SparkSession, None] = None,
 ) -> None:
     """Sets and unsets pyspark table properties. If the property already
@@ -133,7 +133,7 @@ def set_table_properties(
                 spark_session.sql(_sql)
                 print("   Result: The property has been set")
 
-        if allow_unset:
+        if not keep_existing:
             for k, v in _existing_properties.items():
                 if k not in properties:
                     _sql = f"ALTER TABLE {table_name} UNSET TBLPROPERTIES ({k})"

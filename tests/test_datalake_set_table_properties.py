@@ -47,7 +47,7 @@ def test_set_table_properties_new_table_with_existing_properties(spark, tmp_path
     assert get_properties == properties_to_set
 
 
-def test_set_table_properties_new_table_existing_properties_allow_unset(spark, tmp_path) -> None:
+def test_set_table_properties_new_table_remove_existing(spark, tmp_path) -> None:
     """Tested method must set correctly table properties to the brand new dataset.
     An existing property must be removed because of option allow_unset=True,
     therefore only the table options defined in the input dictionary must be set"""
@@ -64,7 +64,7 @@ def test_set_table_properties_new_table_existing_properties_allow_unset(spark, t
     _sql = f"ALTER TABLE delta.`{delta_path}` SET TBLPROPERTIES (prop.property1 = 'abc')"
     spark.sql(_sql)
 
-    set_table_properties(table_path=delta_path, properties=properties_to_set, allow_unset=True)
+    set_table_properties(table_path=delta_path, properties=properties_to_set, keep_existing=False)
 
     get_properties = get_table_properties(table_path=delta_path)
 
