@@ -14,6 +14,8 @@ repos:
       - id: check-yaml
       - id: check-ast
       - id: flake8
+        args: # arguments to configure flake8        
+        - "--max-line-length=100"
   - repo: https://github.com/ambv/black
     rev: 22.3.0 
     hooks:

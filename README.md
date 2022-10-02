@@ -4,7 +4,7 @@ Spalah is a set of python helpers to deal with PySpark dataframes, transformatio
 
 The word "spalah" means "spark" in Ukrainian 🇺🇦 
 
-## Installation
+# Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install spalah.
 
@@ -12,8 +12,45 @@ Use the package manager [pip](https://pip.pypa.io/en/stable/) to install spalah.
 pip install spalah
 ```
 
-## Examples of use
+# Examples of use
+## spalah.datalake
 
+### get_table_properties
+
+```python
+from spalah.datalake import get_table_properties
+
+table_properties = get_table_properties(table_path="/path/dataset")
+
+print(table_properties) 
+
+# output: 
+# {'delta.deletedFileRetentionDuration': 'interval 15 days'}
+```
+
+### set_table_properties
+
+```python
+from spalah.datalake import set_table_properties
+
+set_table_properties(
+    table_path='/path/dataset',
+    properties={
+        "delta.logRetentionDuration": "interval 10 days",
+        "delta.deletedFileRetentionDuration": "interval 15 days"
+    }
+)
+```
+and the standard output is:
+```
+Applying table properties on 'delta.`/path/dataset`':
+ - Checking if 'delta.logRetentionDuration = interval 10 days' is set on delta.`/path/dataset`
+   Result: The property has been set
+ - Checking if 'delta.deletedFileRetentionDuration = interval 15 days' is set on delta.`/path/dataset`
+   Result: The property has been set
+```
+
+## spalah.dataframe
 ### SchemaComparer
 
 ```python
@@ -147,7 +184,7 @@ root
 """
 ```
 
-Check for more information an [examples](docs/examples.md) page and related [notebook](docs/usage.ipynb)
+Check for more information in [examples: dataframe](docs/examples_dataframe.md), [examples: datalake](docs/examples_datalake.md) pages and related [notebook](docs/usage.ipynb)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
