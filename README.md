@@ -13,6 +13,42 @@ pip install spalah
 ```
 
 # Examples of use
+## spalah.datalake
+
+### get_table_properties
+
+```python
+from spalah.datalake import get_table_properties
+
+table_properties = get_table_properties(table_path="/path/dataset")
+
+print(table_properties) 
+
+# output: 
+# {'delta.deletedFileRetentionDuration': 'interval 15 days'}
+```
+
+### set_table_properties
+
+```python
+from spalah.datalake import set_table_properties
+
+set_table_properties(
+    table_path='/path/dataset',
+    properties={
+        "delta.logRetentionDuration": "interval 10 days",
+        "delta.deletedFileRetentionDuration": "interval 15 days"
+    }
+)
+```
+and the standard output is:
+```
+Applying table properties on 'delta.`/path/dataset`':
+ - Checking if 'delta.logRetentionDuration = interval 10 days' is set on delta.`/path/dataset`
+   Result: The property has been set
+ - Checking if 'delta.deletedFileRetentionDuration = interval 15 days' is set on delta.`/path/dataset`
+   Result: The property has been set
+```
 
 ## spalah.dataframe
 ### SchemaComparer
