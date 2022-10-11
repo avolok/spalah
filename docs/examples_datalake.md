@@ -1,16 +1,16 @@
 # Examples of use: spalah.datalake
 
 
-This module contains various storage and dataset specific functions, like: `get_table_properties`, `set_table_properties`, `check_dbfs_mounts` etc. 
+This module contains various storage and dataset specific functions, like: `get_delta_properties`, `set_delta_properties`, `check_dbfs_mounts` etc. 
 
 
-### get_table_properties
+### get_delta_properties
 
 
 ```python
-from spalah.datalake import get_table_properties
+from spalah.datalake import get_delta_properties
 
-table_properties = get_table_properties(table_path="/path/dataset")
+table_properties = get_delta_properties(table_path="/path/dataset")
 
 print(table_properties)
 
@@ -21,12 +21,12 @@ print(table_properties)
 
 
 
-### set_table_properties
+### set_delta_properties
 
 ```python
-from spalah.datalake import set_table_properties
+from spalah.datalake import set_delta_properties
 
-set_table_properties(
+set_delta_properties(
     table_path='/path/dataset',
     properties={
         "delta.logRetentionDuration": "interval 10 days",
@@ -46,9 +46,9 @@ Applying table properties on 'delta.`/path/dataset`':
 If the existing properties not to be preserved use parameter `keep_existing`:
 
 ```python
-from spalah.datalake import set_table_properties
+from spalah.datalake import set_delta_properties
 
-set_table_properties(
+set_delta_properties(
     table_path='/path/dataset',
     properties={
         "delta.logRetentionDuration": "interval 10 days",
