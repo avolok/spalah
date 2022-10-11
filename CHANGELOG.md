@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.1 (2022-10-11)
+### Fix
+* Rename *_delta_properties methods ([#12](https://github.com/avolok/spalah/issues/12)) ([`52ec3f9`](https://github.com/avolok/spalah/commit/52ec3f9bc446d7ef33b67713769ba6563ee55a07))
+
 ## v0.4.0 (2022-10-02)
 ### Feature
 * Add a 'datalake' module ([#11](https://github.com/avolok/spalah/issues/11)) ([`c326926`](https://github.com/avolok/spalah/commit/c3269260a646a9d2297028d1c1d4c871deb67093))
