@@ -29,10 +29,12 @@ def check_dbfs_mounts(mounts: list, print_output: bool = False):
     return _result
 
 
-def get_table_properties(
-    table_path: str = "", table_name: str = "", spark_session: Union[SparkSession, None] = None
+def get_delta_properties(
+    table_path: str = "",
+    table_name: str = "",
+    spark_session: Union[SparkSession, None] = None,
 ) -> Union[dict, None]:
-    """Gets table properties as dictionary.
+    """Gets dataset's delta properties as a dictionary.
 
     Args:
         table_path (str, optional):     Path to delta table Defaults to ''.
@@ -58,27 +60,32 @@ def get_table_properties(
 
     if table_path:
         table_name = f"delta.`{table_path}`"
+        _identifier_to_check = table_path
+    else:
+        _identifier_to_check = table_name
 
-    if not DeltaTable.isDeltaTable(sparkSession=spark_session, identifier=table_path):
+    if not DeltaTable.isDeltaTable(sparkSession=spark_session, identifier=_identifier_to_check):
         print(f"{table_name} is not a Delta Table")
         return None
 
-    if table_path:
-        _delta_table = DeltaTable.forPath(path=table_path, sparkSession=spark_session)
-    else:
-        _delta_table = DeltaTable.forName(tableOrViewName=table_name, sparkSession=spark_session)
+    existing_properties = (
+        spark_session.sql(f"DESCRIBE DETAIL {table_name}")
+        .select("properties")
+        .collect()[0]
+        .asDict()["properties"]
+    )
 
-    return _delta_table.detail().collect()[0].asDict()["properties"]
+    return existing_properties
 
 
-def set_table_properties(
+def set_delta_properties(
     properties: dict,
     table_path: str = "",
     table_name: str = "",
     keep_existing: bool = True,
     spark_session: Union[SparkSession, None] = None,
 ) -> None:
-    """Sets and unsets pyspark table properties. If the property already
+    """Sets and unsets delta properties. If the property already
     set with a requested value ALTER TABLE will not be triggered again
 
     Args:
@@ -112,21 +119,18 @@ def set_table_properties(
     if table_path:
         table_name = f"delta.`{table_path}`"
 
-    _existing_properties = get_table_properties(
+    _existing_properties = get_delta_properties(
         table_name=original_table_name, table_path=table_path
     )
 
-    if _existing_properties is None:
-        print(f"{table_name} is not a Delta Table")
-    else:
-
+    if _existing_properties is not None:
         print(f"Applying table properties on '{table_name}':")
 
         for k, v in properties.items():
 
             print(f" - Checking if '{k} = {v}' is set on {table_name}")
 
-            if k in _existing_properties and _existing_properties[k] == v:
+            if k in _existing_properties and _existing_properties[k] == str(v):
                 print("   Result: The property already exists on the table")
             else:
                 _sql = f"ALTER TABLE {table_name} SET TBLPROPERTIES ({k} = '{v}')"
