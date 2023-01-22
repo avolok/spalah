@@ -1,10 +1,7 @@
 import copy
 from pprint import pformat, pprint
 from typing import Union, List, Set
-
-from pyspark.sql import DataFrame
-from pyspark.sql import functions as F
-from pyspark.sql import types as T
+from pyspark.sql import DataFrame, functions as F, types as T
 from collections import namedtuple
 
 
@@ -464,7 +461,7 @@ class SchemaComparer:
             return {
                 (x, y)
                 for (x, y) in input_value
-                if not x.lower() in ([z[0].lower() for z in subtract_value])
+                if x.lower() not in [z[0].lower() for z in subtract_value]
             }
 
         self._source = _remove(self._source, subtract_value)  # type: ignore
