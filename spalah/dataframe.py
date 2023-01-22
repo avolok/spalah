@@ -1,9 +1,11 @@
 import copy
-from pprint import pformat, pprint
-from typing import Union, List, Set
-from pyspark.sql import DataFrame, functions as F, types as T
 from collections import namedtuple
+from pprint import pformat, pprint
+from typing import List, Set, Union
 
+from pyspark.sql import DataFrame
+from pyspark.sql import functions as F
+from pyspark.sql import types as T
 
 MatchedColumn = namedtuple("MatchedColumn", ["name", "data_type"])
 NotMatchedColumn = namedtuple("NotMatchedColumn", ["name", "data_type", "reason"])
