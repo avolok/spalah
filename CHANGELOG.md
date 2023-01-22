@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v0.4.2 (2023-01-22)
+
+
 ## v0.4.1 (2022-10-11)
 ### Fix
 * Rename *_delta_properties methods ([#12](https://github.com/avolok/spalah/issues/12)) ([`52ec3f9`](https://github.com/avolok/spalah/commit/52ec3f9bc446d7ef33b67713769ba6563ee55a07))
