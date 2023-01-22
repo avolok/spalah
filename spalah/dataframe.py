@@ -12,6 +12,21 @@ MatchedColumn = namedtuple("MatchedColumn", ["name", "data_type"])
 NotMatchedColumn = namedtuple("NotMatchedColumn", ["name", "data_type", "reason"])
 
 
+def __remove_suffix(input_string: str, suffix: str) -> str:
+    """Remove suffix from string if it exists
+
+    Args:
+        input_string (str):  Input string
+        suffix (str):  Suffix to remove
+
+    Returns:
+        str: Input string without suffix
+    """
+    if suffix and input_string.endswith(suffix):
+        return input_string[: -len(suffix)]
+    return input_string
+
+
 def __process_schema_node(
     node: T.StructField,
     column_prefix: str = "",
@@ -131,7 +146,7 @@ def __process_schema_node(
 
             # removes the name of the array node from the element path
             # because the existence of the array does not create a new level in the path
-            column_prefix_new = column_prefix.removesuffix(node_name).removesuffix(".")
+            column_prefix_new = __remove_suffix(__remove_suffix(column_prefix, node_name), ".")
 
             struct_extracted_from_array_element = __process_schema_node(
                 node=struct_in_array_node,
