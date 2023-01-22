@@ -2,6 +2,10 @@
 
 <!--next-version-placeholder-->
 
+## v0.5.0 (2023-01-22)
+### Feature
+* Slice_dataframe, add a support of arrays ([#13](https://github.com/avolok/spalah/issues/13)) ([`de80906`](https://github.com/avolok/spalah/commit/de8090680916081956f95d41c2585b0877a8dbbd))
+
 ## v0.4.1 (2022-10-11)
 ### Fix
 * Rename *_delta_properties methods ([#12](https://github.com/avolok/spalah/issues/12)) ([`52ec3f9`](https://github.com/avolok/spalah/commit/52ec3f9bc446d7ef33b67713769ba6563ee55a07))
