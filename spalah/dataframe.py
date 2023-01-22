@@ -1,3 +1,4 @@
+import copy
 from pprint import pformat, pprint
 from typing import Union, List, Set
 
@@ -11,12 +12,28 @@ MatchedColumn = namedtuple("MatchedColumn", ["name", "data_type"])
 NotMatchedColumn = namedtuple("NotMatchedColumn", ["name", "data_type", "reason"])
 
 
+def __remove_suffix(input_string: str, suffix: str) -> str:
+    """Remove suffix from string if it exists
+
+    Args:
+        input_string (str):  Input string
+        suffix (str):  Suffix to remove
+
+    Returns:
+        str: Input string without suffix
+    """
+    if suffix and input_string.endswith(suffix):
+        return input_string[: -len(suffix)]
+    return input_string
+
+
 def __process_schema_node(
-    node: T.StructType,
+    node: T.StructField,
     column_prefix: str = "",
-    columns_to_include: Union[list, None] = None,  # type: ignore
-    columns_to_exclude: Union[list, None] = None,  # type: ignore
+    columns_to_include: Union[List, None] = None,  # type: ignore
+    columns_to_exclude: Union[List, None] = None,  # type: ignore
     nullify_only: bool = False,
+    array_element: Union[None, F.col] = None,
     debug: bool = False,
 ) -> Union[F.col, F.lit, None]:
     """Internal function to process a node of the schema
@@ -26,10 +43,13 @@ def __process_schema_node(
         column_prefix (str, optional): starting path of the nested column name
         columns_to_include (list): Columns that must remain in the dataframe unchanged
         columns_to_exclude (list): Columns that must be removed (or nullified)
-        debug (bool, optional): _description_. Defaults to False.
+        nullify_only (bool, optional): If True, only nullify columns, do not remove them
+        array_element (Union[None, F.col], optional): reference to the array element if
+            it must be transformed
+        debug (bool, optional): If True, print debug information, defaults to False
 
     Returns:
-        Union[F.col, F.lit, None]: The pyspark column instance of a certain node of schema
+        Union[Column, None]: The pyspark column instance of a certain node of schema
         if column to be rendered or None if column to be removed from the final projection
     """
 
@@ -55,8 +75,7 @@ def __process_schema_node(
         ]
     ):
         include_this_node = False
-    # If columns to include specified, then filter out other columns
-    # that are not in the list
+    # If no columns to include specified, then filter out other columns
     elif columns_to_include and any(
         [
             x
@@ -66,7 +85,7 @@ def __process_schema_node(
     ):
         include_this_node = True
     # If no columns to include specified, then all columns are accepted
-    elif columns_to_include is not None and len(columns_to_include) == 0:
+    elif not columns_to_include or len(columns_to_include) == 0:
         include_this_node = True
 
     # Structs
@@ -76,12 +95,20 @@ def __process_schema_node(
 
         for field in node.dataType.fields:
 
+            if isinstance(field.dataType, T.StructType) and array_element is not None:
+                array_col_child = array_element[field.name]
+            elif array_element is not None:
+                array_col_child = array_element
+            else:
+                array_col_child = None
+
             _child = __process_schema_node(
                 node=field,
                 column_prefix=column_prefix,
                 columns_to_include=columns_to_include,
                 columns_to_exclude=columns_to_exclude,
                 nullify_only=nullify_only,
+                array_element=array_col_child,
                 debug=debug,
             )
             if _child is not None:
@@ -91,18 +118,74 @@ def __process_schema_node(
             is_struct_without_children = True
         col_expression = F.struct(children).alias(node_name)
 
+    # Struct within array (or: array(struct()))
+    elif (
+        isinstance(node.dataType, T.ArrayType)
+        and isinstance(node.dataType.elementType, T.StructType)
+        and
+        # to include this node only when it must appear in the final projection
+        (nullify_only or include_this_node)
+    ):
+
+        children = []
+
+        def _transform_array(array_element: F.col) -> F.col:
+            """Internal function to process elements of an array
+            one by one and return the transformed array
+
+            Args:
+                row (F.col): array element to transform
+
+            Returns:
+                F.col: transformed array element
+            """
+
+            # converts schema node array(struct()) -> struct()
+            struct_in_array_node = copy.deepcopy(node)
+            struct_in_array_node.dataType = node.dataType.elementType
+
+            # removes the name of the array node from the element path
+            # because the existence of the array does not create a new level in the path
+            column_prefix_new = __remove_suffix(__remove_suffix(column_prefix, node_name), ".")
+
+            struct_extracted_from_array_element = __process_schema_node(
+                node=struct_in_array_node,
+                column_prefix=column_prefix_new,
+                columns_to_include=columns_to_include,
+                columns_to_exclude=columns_to_exclude,
+                nullify_only=nullify_only,
+                array_element=array_element,
+                debug=debug,
+            )
+            return struct_extracted_from_array_element
+
+        # if this is first iteration (or level of arrays) then
+        # the array path is the element path
+        # otherwise, the array path is child node of the parent array
+        if array_element is None:
+            array_path = column_prefix
+        else:
+            array_path = array_element[node_name]
+
+        col_expression = F.transform(array_path, lambda x: _transform_array(array_element=x)).alias(
+            node_name
+        )
+
     # Regular columns
     else:
 
         # get node data type
         # In case of nullification of array it converted to a string null value
         if isinstance(node.dataType, T.ArrayType):
-            node_type = T.StringType()
+            node_type = T.StringType()  # arrays will be nullified and casted as strings
         else:
             node_type = node.dataType
 
-        # regular column expression, valid for non-nulLified columns
-        col_expression = F.col(column_prefix).alias(node_name)
+        # regular column expression, valid for non-nullified columns
+        if array_element is None:
+            col_expression = F.col(column_prefix).alias(node_name)
+        else:
+            col_expression = array_element[node_name].alias(node_name)
 
         # column expression for nullified fields
         nullified_col_expression = F.lit(None).cast(node_type).alias(node_name)
@@ -127,8 +210,8 @@ def __process_schema_node(
 
 def slice_dataframe(
     input_dataframe: DataFrame,
-    columns_to_include: Union[list, None] = None,
-    columns_to_exclude: Union[list, None] = None,
+    columns_to_include: Union[List, None] = None,
+    columns_to_exclude: Union[List, None] = None,
     nullify_only: bool = False,
     debug: bool = False,
 ) -> DataFrame:

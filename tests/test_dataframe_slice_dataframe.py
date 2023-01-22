@@ -7,9 +7,10 @@ from spalah.dataframe import slice_dataframe
 @pytest.mark.parametrize(
     "assert_message,input_dataset,columns_to_include,columns_to_exclude,nullify_only,expected",
     [
-        # nested: include
+        # nested structs: include
         (
-            "The dataframe must contain only columns listed in 'columns_to_include'",
+            "The dataframe must contain only columns listed in "
+            "'columns_to_include' (nested structs)",
             "nested_dataset",
             ["column_a", "column_c"],
             [],
@@ -21,9 +22,10 @@ from spalah.dataframe import slice_dataframe
                 ),
             ),
         ),
-        # nested: include, mixed case
+        # nested structs: include, mixed case
         (
-            "The dataframe must contain only columns listed in 'columns_to_include'",
+            "The dataframe must contain only columns listed in "
+            "'columns_to_include' (nested structs)",
             "nested_dataset",
             ["Column_A", "column_c"],
             [],
@@ -35,10 +37,10 @@ from spalah.dataframe import slice_dataframe
                 ),
             ),
         ),
-        # "nested: include and exclude"
+        # "nested structs: include and exclude"
         (
             "The dataframe must contain columns listed in "
-            "'columns_to_include' beside of 'columns_to_exclude'",
+            "'columns_to_include' beside of 'columns_to_exclude'  (nested structs)",
             "nested_dataset",
             ["column_b", "column_c"],
             ["column_c.column_c_2.c_2_1"],
@@ -48,9 +50,9 @@ from spalah.dataframe import slice_dataframe
                 column_c=Row(column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")),
             ),
         ),
-        # "nested: exclude"
+        # "nested structs: exclude"
         (
-            "All columns in 'columns_to_exclude' must be excluded (nested)'",
+            "All columns in 'columns_to_exclude' must be excluded (nested structs)'",
             "nested_dataset",
             [],
             ["column_b", "column_c.column_c_2.c_2_1"],
@@ -60,9 +62,9 @@ from spalah.dataframe import slice_dataframe
                 column_c=Row(column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")),
             ),
         ),
-        # "nested: exclude, mixed case"
+        # "nested structs: exclude, mixed case"
         (
-            "All columns in 'columns_to_exclude' must be excluded (nested)'",
+            "All columns in 'columns_to_exclude' must be excluded (nested structs)'",
             "nested_dataset",
             [],
             ["Column_B", "Column_C.column_c_2.C_2_1"],
@@ -72,9 +74,9 @@ from spalah.dataframe import slice_dataframe
                 column_c=Row(column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")),
             ),
         ),
-        # "nested: nullify only for excluded columns"
+        # "nested structs: nullify only for excluded columns"
         (
-            "All columns in 'columns_to_exclude' must be nullified (nested)'",
+            "All columns in 'columns_to_exclude' must be nullified (nested structs)'",
             "nested_dataset",
             [],
             ["column_b", "column_c.column_c_2.c_2_1"],
@@ -105,16 +107,204 @@ from spalah.dataframe import slice_dataframe
             False,
             Row(a=1, b=2.0, c="string1"),
         ),
+        # "nested: nullify flat ArrayType"
+        (
+            "All columns in 'columns_to_exclude' must be nullified (nested)'",
+            "nested_flat_array",
+            [],
+            ["RetailTransaction.LineItem"],
+            True,
+            Row(RetailTransaction=Row(StoreID="1234", LineItem=None)),
+        ),
+        # "nested: nullify fields within ArrayType-Struct"
+        (
+            "All columns in 'columns_to_exclude' must be nullified (nested)'",
+            "nested_array_struct",
+            [],
+            ["RetailTransaction.LineItem.LoyaltyCard.CardId"],
+            True,
+            Row(
+                RetailTransaction=Row(
+                    StoreID="1234",
+                    LineItem=[
+                        Row(
+                            SequenceNumber="2",
+                            LoyaltyCard=Row(CardId=None, CardType="Premium"),
+                        ),
+                        Row(
+                            SequenceNumber="3",
+                            LoyaltyCard=Row(CardId=None, CardType="Gold"),
+                        ),
+                    ],
+                )
+            ),
+        ),
+        # "nested: nullify Root of ArrayType-Struct"
+        (
+            "All columns in 'columns_to_exclude' must be nullified (nested)'",
+            "nested_array_struct",
+            [],
+            ["RetailTransaction.LineItem"],
+            True,
+            Row(
+                RetailTransaction=Row(
+                    StoreID="1234",
+                    LineItem=[
+                        Row(
+                            SequenceNumber=None,
+                            LoyaltyCard=Row(CardId=None, CardType=None),
+                        ),
+                        Row(
+                            SequenceNumber=None,
+                            LoyaltyCard=Row(CardId=None, CardType=None),
+                        ),
+                    ],
+                )
+            ),
+        ),
+        # "nested: nullify fields within ArrayType-Struct-ArrayType"
+        (
+            "All columns in 'columns_to_exclude' must be nullified (nested)'",
+            "nested_array_struct_array",
+            [],
+            ["RetailTransaction.LineItem.Discount.ItemList.ItemID"],
+            True,
+            Row(
+                RetailTransaction=Row(
+                    StoreID="1234",
+                    LineItem=[
+                        Row(
+                            Discount=Row(
+                                DiscountId="1",
+                                ItemList=[Row(ItemID=None, TestId="200")],
+                            )
+                        )
+                    ],
+                )
+            ),
+        ),
+        # "nested: nullify fields within ArrayType-Struct-ArrayType multiple rows"
+        (
+            "All columns in 'columns_to_exclude' must be nullified (nested)'",
+            "nested_array_struct_array_multiple_rows",
+            [],
+            ["RetailTransaction.LineItem.Discount.ItemList.ItemID"],
+            True,
+            Row(
+                RetailTransaction=Row(
+                    StoreID="1234",
+                    LineItem=[
+                        Row(
+                            Discount=Row(
+                                DiscountId="1",
+                                ItemList=[Row(ItemID=None, ItemNum="11")],
+                            )
+                        ),
+                        Row(
+                            Discount=Row(
+                                DiscountId="2",
+                                ItemList=[Row(ItemID=None, ItemNum="13")],
+                            )
+                        ),
+                    ],
+                )
+            ),
+        ),
+        # "nested: nullify fields within ArrayType-ArrayType",
+        (
+            "All columns in 'columns_to_exclude' must be nullified (nested)'",
+            "nested_array_array",
+            [],
+            ["RetailTransaction.LineItem.Discount.POSItemId"],
+            True,
+            Row(
+                RetailTransaction=Row(
+                    StoreID="1234",
+                    LineItem=[
+                        Row(
+                            Discount=[
+                                Row(POSItemId=None, POSName="POS01"),
+                                Row(POSItemId=None, POSName="POS02"),
+                            ]
+                        )
+                    ],
+                )
+            ),
+        ),
+        # "nested: nullify fields within ArrayType-Struct-Struct"
+        (
+            "All columns in 'columns_to_exclude' must be nullified (nested)'",
+            "nested_array_struct_struct",
+            [],
+            ["RetailTransaction.LineItem.LoyaltyItem.LoyaltyCard.CardId"],
+            True,
+            Row(
+                RetailTransaction=Row(
+                    StoreID="1234",
+                    LineItem=[
+                        Row(
+                            LoyaltyItem=Row(
+                                SequenceNumber="2",
+                                LoyaltyCard=Row(CardId=None, CardType="Premium"),
+                            )
+                        )
+                    ],
+                )
+            ),
+        ),
+        # "nested: exclude fields in nested arrays"
+        (
+            "All columns in 'columns_to_exclude' must be nullified (nested)'",
+            "nested_tlog_example",
+            [],
+            [
+                "RetailTransaction.LineItem.LoyaltyItem.LoyaltyCard.CardId",
+                "RetailTransaction.LineItem.Discount.POSName",
+            ],
+            False,
+            Row(
+                RetailTransaction=Row(
+                    StoreID="1234",
+                    LineItem=[
+                        Row(
+                            LoyaltyItem=Row(
+                                SequenceNumber="2",
+                                LoyaltyCard=Row(CardType="Premium"),
+                            ),
+                            Discount=[Row(POSItemId="100")],
+                        )
+                    ],
+                )
+            ),
+        ),
+        # "nested: nullify fields within array as root"
+        (
+            "All columns in 'columns_to_exclude' must be nullified (nested)'",
+            "nested_root_array",
+            [],
+            ["RetailTransaction.StoreID"],
+            True,
+            Row(RetailTransaction=[Row(StoreID=None, StoreName="Test Store")]),
+        ),
     ],
     ids=[
-        "nested: include",
-        "nested: include, mixed case",
-        "nested: include and exclude",
-        "nested: exclude",
-        "nested: exclude, mixed case",
-        "nested: nullify only for excluded columns",
+        "nested structs: include",
+        "nested structs: include, mixed case",
+        "nested structs: include and exclude",
+        "nested structs: exclude",
+        "nested structs: exclude, mixed case",
+        "nested structs: nullify only for excluded columns",
         "flat: nullify only for excluded columns",
         "flat: exclude",
+        "nested: nullify flat ArrayType",
+        "nested: nullify fields within ArrayType-Struct",
+        "nested: nullify Root of ArrayType-Struct",
+        "nested: nullify fields within ArrayType-Struct-ArrayType",
+        "nested: nullify fields within ArrayType-Struct-ArrayType multiple rows",
+        "nested: nullify fields within ArrayType-ArrayType",
+        "nested: nullify fields within ArrayType-Struct-Struct",
+        "nested: exclude fields in nested arrays",
+        "nested: nullify fields within array as root",
     ],
 )
 def test_slice_dataframe(
@@ -135,9 +325,9 @@ def test_slice_dataframe(
         columns_to_exclude=columns_to_exclude,
         nullify_only=nullify_only,
         debug=True,
-    ).first()
+    )
 
-    assert actual == expected, assert_message
+    assert actual.first() == expected, assert_message
 
 
 def test_slice_dataframe_invalid_parameters(request):
