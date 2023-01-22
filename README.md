@@ -13,88 +13,47 @@ pip install spalah
 ```
 
 # Examples of use
-## spalah.datalake
-
-### get_delta_properties
-
-```python
-from spalah.datalake import get_delta_properties
-
-table_properties = get_delta_properties(table_path="/path/dataset")
-
-print(table_properties) 
-
-# output: 
-# {'delta.deletedFileRetentionDuration': 'interval 15 days'}
-```
-
-### set_delta_properties
-
-```python
-from spalah.datalake import set_delta_properties
-
-set_delta_properties(
-    table_path='/path/dataset',
-    properties={
-        "delta.logRetentionDuration": "interval 10 days",
-        "delta.deletedFileRetentionDuration": "interval 15 days"
-    }
-)
-```
-and the standard output is:
-```
-Applying table properties on 'delta.`/path/dataset`':
- - Checking if 'delta.logRetentionDuration = interval 10 days' is set on delta.`/path/dataset`
-   Result: The property has been set
- - Checking if 'delta.deletedFileRetentionDuration = interval 15 days' is set on delta.`/path/dataset`
-   Result: The property has been set
-```
+Spalah currently has two different groups of helpers: `dataframe` and `datalake`.
 
 ## spalah.dataframe
-### SchemaComparer
+
+### slice_dataframe
 
 ```python
-from spalah.dataframe import SchemaComparer
+from spalah.dataframe import slice_dataframe
 
-schema_comparer = SchemaComparer(
-    source_schema = df_source.schema,
-    target_schema = df_target.schema
+df = spark.sql(
+    'SELECT 1 as ID, "John" AS Name, struct("line1" AS Line1, "line2" AS Line2) AS Address'
 )
-
-schema_comparer.compare()
-
-# The comparison results are stored in the class instance properties `matched` and `not_matched`
-
-# Contains a list of matched columns:
-schema_comparer.matched
+df.printSchema()
 
 """ output:
-[MatchedColumn(name='Address.Line1',  data_type='StringType')]
+root
+ |-- ID: integer (nullable = false)
+ |-- Name: string (nullable = false)
+ |-- Address: struct (nullable = false)
+ |    |-- Line1: string (nullable = false)
+ |    |-- Line2: string (nullable = false)
 """
 
-# Contains a list of all not matched columns with a reason as description of non-match:
-schema_comparer.not_matched
+# Create a new dataframe by cutting of root and nested attributes
+df_result = slice_dataframe(
+    input_dataframe=df,
+    columns_to_include=["Name", "Address"],
+    columns_to_exclude=["Address.Line2"]
+)
+df_result.printSchema()
 
 """ output:
-[
-    NotMatchedColumn(
-        name='name', 
-        data_type='StringType', 
-        reason="The column exists in source and target schemas but it's name is case-mismatched"
-    ),
-    NotMatchedColumn(
-        name='ID', 
-        data_type='IntegerType <=> StringType', 
-        reason='The column exists in source and target schemas but it is not matched by a data type'
-    ),
-    NotMatchedColumn(
-        name='Address.Line2', 
-        data_type='StringType', 
-        reason='The column exists only in the source schema'
-    )
-]
+root
+ |-- Name: string (nullable = false)
+ |-- Address: struct (nullable = false)
+ |    |-- Line1: string (nullable = false)
 """
 ```
+
+Beside of nested regular structs it also supported slicing of structs in arrays, including multiple levels of nesting
+
 
 ### flatten_schema
 
@@ -149,39 +108,86 @@ outcome_dataframe = spark.createDataFrame(__data, StructType.fromJson(__schema))
 """
 ```
 
-### slice_dataframe
+### SchemaComparer
 
 ```python
-from spalah.dataframe import slice_dataframe
+from spalah.dataframe import SchemaComparer
 
-df = spark.sql(
-    'SELECT 1 as ID, "John" AS Name, struct("line1" AS Line1, "line2" AS Line2) AS Address'
+schema_comparer = SchemaComparer(
+    source_schema = df_source.schema,
+    target_schema = df_target.schema
 )
-df.printSchema()
+
+schema_comparer.compare()
+
+# The comparison results are stored in the class instance properties `matched` and `not_matched`
+
+# Contains a list of matched columns:
+schema_comparer.matched
 
 """ output:
-root
- |-- ID: integer (nullable = false)
- |-- Name: string (nullable = false)
- |-- Address: struct (nullable = false)
- |    |-- Line1: string (nullable = false)
- |    |-- Line2: string (nullable = false)
+[MatchedColumn(name='Address.Line1',  data_type='StringType')]
 """
 
-# Create a new dataframe by cutting of root and nested attributes
-df_result = slice_dataframe(
-    input_dataframe=df,
-    columns_to_include=["Name", "Address"],
-    columns_to_exclude=["Address.Line2"]
-)
-df_result.printSchema()
+# Contains a list of all not matched columns with a reason as description of non-match:
+schema_comparer.not_matched
 
 """ output:
-root
- |-- Name: string (nullable = false)
- |-- Address: struct (nullable = false)
- |    |-- Line1: string (nullable = false)
+[
+    NotMatchedColumn(
+        name='name', 
+        data_type='StringType', 
+        reason="The column exists in source and target schemas but it's name is case-mismatched"
+    ),
+    NotMatchedColumn(
+        name='ID', 
+        data_type='IntegerType <=> StringType', 
+        reason='The column exists in source and target schemas but it is not matched by a data type'
+    ),
+    NotMatchedColumn(
+        name='Address.Line2', 
+        data_type='StringType', 
+        reason='The column exists only in the source schema'
+    )
+]
 """
+```
+
+## spalah.datalake
+
+### get_delta_properties
+
+```python
+from spalah.datalake import get_delta_properties
+
+table_properties = get_delta_properties(table_path="/path/dataset")
+
+print(table_properties) 
+
+# output: 
+# {'delta.deletedFileRetentionDuration': 'interval 15 days'}
+```
+
+### set_delta_properties
+
+```python
+from spalah.datalake import set_delta_properties
+
+set_delta_properties(
+    table_path='/path/dataset',
+    properties={
+        "delta.logRetentionDuration": "interval 10 days",
+        "delta.deletedFileRetentionDuration": "interval 15 days"
+    }
+)
+```
+and the standard output is:
+```
+Applying table properties on 'delta.`/path/dataset`':
+ - Checking if 'delta.logRetentionDuration = interval 10 days' is set on delta.`/path/dataset`
+   Result: The property has been set
+ - Checking if 'delta.deletedFileRetentionDuration = interval 15 days' is set on delta.`/path/dataset`
+   Result: The property has been set
 ```
 
 Check for more information in [examples: dataframe](docs/examples_dataframe.md), [examples: datalake](docs/examples_datalake.md) pages and related [notebook](docs/usage.ipynb)
