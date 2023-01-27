@@ -2,9 +2,6 @@
 
 <!--next-version-placeholder-->
 
-## v0.6.0 (2023-01-27)
-
-
 ## v0.5.0 (2023-01-22)
 ### Feature
 * Slice_dataframe, add a support of arrays ([#13](https://github.com/avolok/spalah/issues/13)) ([`de80906`](https://github.com/avolok/spalah/commit/de8090680916081956f95d41c2585b0877a8dbbd))
