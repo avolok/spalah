@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "spalah"
-version = "0.5.0"
+version = "0.6.0"
 description = "Spalah is a set of PySpark dataframe helpers"
 homepage = "https://github.com/avolok/spalah"
 authors = ["Alex Volok <alexandr.volok@gmail.com>"]
