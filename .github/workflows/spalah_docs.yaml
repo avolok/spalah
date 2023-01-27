@@ -1,4 +1,4 @@
-name: spalah CI
+name: spalah docs
 
 on: 
   push:
@@ -36,4 +36,3 @@ jobs:
       - name: Build docs and publish to a dedicated branch
         run: poetry run mkdocs gh-deploy
         working-directory: ${{env.working-directory}}
-
