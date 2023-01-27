@@ -5,7 +5,7 @@ on:
     paths:
       - "spalah/**"
       - "tests/**"
-      - ".github/workflows/**"
+      - ".github/workflows/spalah_ci.yaml"
 
 concurrency:
   group: ${{ github.ref }}
