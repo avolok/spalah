@@ -11,12 +11,12 @@ classifiers = ["Intended Audience :: Developers", "License :: OSI Approved :: MI
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = ">=3.8.1"
 black = "==22.3.0"
 bump2version = "==1.0.1"
 coverage = "==6.4.1"
 delta-spark = "==2.1.0"
-flake8 = "==4.0.1"
+flake8 = "==6.0.0"
 packaging = "*"
 pip = "*"
 pre-commit = "==2.19.0"
@@ -29,6 +29,11 @@ twine = "==4.0.1"
 watchdog = "==2.1.9"
 wheel = "*"
 
+
+[tool.poetry.group.docs.dependencies]
+mkdocs-material = "^9.0.6"
+mkdocstrings = {extras = ["python"], version = "^0.20.0"}
+mkdocs = "1.4.2"
 
 [tool.semantic_release]
 version_variable = [    
