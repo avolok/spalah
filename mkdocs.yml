@@ -1,0 +1,66 @@
+site_name: spalah - the collection of pyspark dataframe helpers
+theme:
+  name: "material"
+  palette:
+    primary: blue grey
+    accent: light blue
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.indexes
+    - toc.follow
+    # - toc.integrate
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - header.autohide    
+    - navigation.footer
+    - content.code.copy
+  #icon:
+  #  logo: bootstrap/envelope-paper
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/avolok/spalah
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/alexandrvolok
+
+copyright: Copyright &copy; 2022 - 2023 Alex Volok
+
+repo_url: https://github.com/avolok/spalah
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings
+
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  #- toc:
+      #title: "Table of contents"
+
+
+nav:
+  - About: index.md
+  - "Examples":
+    - "spalah.dataframe": examples_dataframe.md
+    - "spalah.datalake": examples_datalake.md
+  #- tutorials.md
+  #- How-To Guides: how-to-guides.md
+  - "Reference":
+    - "spalah.dataframe": reference_dataframe.md
+    - "spalah.datalake": reference_datalake.md
+  #- explanation.md
