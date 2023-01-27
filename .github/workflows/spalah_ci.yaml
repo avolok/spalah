@@ -17,13 +17,20 @@ jobs:
     runs-on: ubuntu-latest
     env:
       working-directory: .
-    steps:
-      - uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install poetry
+        run: pipx install poetry
+
+      - uses: actions/setup-python@v3
         with:
-          python-version: 3.8
+          python-version: '3.8'
+          cache: 'poetry'
+
+      - name: Install Dependencies
+        run: poetry install
 
       - name: Get the list of changed files
         id: get_list_of_files
@@ -36,16 +43,16 @@ jobs:
 
           echo "PR_FILES_CHANGED=$( echo $FILES_CHANGED | tr '\n' ' ')" >> $GITHUB_ENV
 
+      - name: Install spalah dependencies
+        run: poetry install
+        working-directory: ${{env.working-directory}}
+
       - uses: pre-commit/action@v2.0.0
         with:
           extra_args: --files ${{ env.PR_FILES_CHANGED }}
 
-      - name: Install spalah dependencies
-        run: pip install . -r requirements_dev.txt
-        working-directory: ${{env.working-directory}}
-
       - name: Test spalah package
-        run: pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
+        run: poetry run pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
 
       - name: Comment coverage
         uses: coroo/pytest-coverage-commentator@v1.0.2
