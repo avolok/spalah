@@ -1,10 +1,13 @@
 name: spalah CI
 
-on:
-  pull_request:
+on: 
+  push:
+    branches:
+      - main
     paths:
       - "spalah/**"
       - "docs/**"
+      - "mkdocs.yml"
 concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
