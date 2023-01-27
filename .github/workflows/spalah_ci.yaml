@@ -32,7 +32,6 @@ jobs:
       - name: Install Dependencies
         run: poetry install
 
-
       - name: Get the list of changed files
         id: get_list_of_files
         run:  |
