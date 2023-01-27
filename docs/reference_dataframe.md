@@ -2,7 +2,9 @@
     handler: python
     selection:
       filters:
-        - "!^__"    
+        - "!^__"  
+        - "__init__"   
+
     
       
     

@@ -1,3 +1,5 @@
+"""This module contains various dataframe specific functions and classes"""
+
 import copy
 from collections import namedtuple
 from pprint import pformat, pprint
@@ -382,7 +384,25 @@ def script_dataframe(input_dataframe: DataFrame, suppress_print_output: bool = T
 
 
 class SchemaComparer:
+    """
+    The SchemaComparer is to compare two spark dataframe schemas and find matched
+    and not matched columns.
+    """
+
     def __init__(self, source_schema: T.StringType, target_schema: T.StringType) -> None:
+        """Constructs all the necessary input attributes for the SchemaComparer object.
+
+        Args:
+            source_schema (T.StringType): source schema to match
+            target_schema (T.StringType): target schema to match
+
+        Examples:
+            >>> from spalah.dataframe import SchemaComparer
+            >>> schema_comparer = SchemaComparer(
+                    source_schema = df_source.schema,
+                    target_schema = df_target.schema
+                )
+        """
         self._source = self.__import_schema(source_schema)
         self._target = self.__import_schema(target_schema)
         self.matched: List[tuple] = list()
@@ -541,6 +561,7 @@ class SchemaComparer:
         Args:
             input_value (Set[tuple]): The set of tuples with a list of column names and data types
             reason (str): Reason for not match
+
         """
 
         for match in input_value:
@@ -550,8 +571,31 @@ class SchemaComparer:
 
     def compare(self) -> None:
         """
-        Compares the source and target schemas and populates properties
-        'matched' and 'not_matched'
+        Compares the source and target schemas and populates properties `matched` and `not_matched`
+
+        Examples:
+            >>> # instantiate schema_comparer firstly, see example above
+            >>> schema_comparer.compare()
+
+            Get list of all columns that are matched by name and type:
+            >>> schema_comparer.matched
+            [MatchedColumn(name='Address.Line1',  data_type='StringType')]
+
+            Get unmatched columns:
+            >>> schema_comparer.not_matched
+            [
+                NotMatchedColumn(
+                    name='name',
+                    data_type='StringType',
+                    reason="The column exists in source and target schemas but it's name is \
+case-mismatched"
+                ),
+                NotMatchedColumn(
+                    name='Address.Line2',
+                    data_type='StringType',
+                    reason='The column exists only in the source schema'
+                )
+            ]
         """
 
         # Case 1: find columns that are matched by name and type and remove them
