@@ -48,7 +48,7 @@ jobs:
         working-directory: ${{env.working-directory}}
 
       - name: Test spalah package
-        run: poetry pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
+        run: poetry run pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
 
       - name: Comment coverage
         uses: coroo/pytest-coverage-commentator@v1.0.2
