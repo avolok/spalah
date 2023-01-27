@@ -25,6 +25,9 @@ jobs:
         with:
           python-version: 3.8
 
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+
       - name: Get the list of changed files
         id: get_list_of_files
         run:  |
@@ -41,11 +44,11 @@ jobs:
           extra_args: --files ${{ env.PR_FILES_CHANGED }}
 
       - name: Install spalah dependencies
-        run: pip install . -r requirements_dev.txt
+        run: poetry install
         working-directory: ${{env.working-directory}}
 
       - name: Test spalah package
-        run: pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
+        run: poetry pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
 
       - name: Comment coverage
         uses: coroo/pytest-coverage-commentator@v1.0.2
