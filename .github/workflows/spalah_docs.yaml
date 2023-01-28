@@ -8,6 +8,9 @@ on:
       - "spalah/**"
       - "docs/**"
       - "mkdocs.yml"
+  
+  pull_request:
+
 concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: true
@@ -32,6 +35,12 @@ jobs:
 
       - name: Install Dependencies
         run: poetry install --with docs
+
+      - name: Prepare branch gh-pages
+        run: |
+          git branch -D gh-pages
+          git checkout -t upstream/gh-pages # (change upstream to your actual remote)
+          git checkout main
 
       - name: Build docs and publish to a dedicated branch
         run: poetry run mkdocs gh-deploy
