@@ -55,9 +55,9 @@ markdown_extensions:
 
 nav:
   - About: index.md
-  #- "Examples":
-  #  - "spalah.dataframe": examples_dataframe.md
-  #  - "spalah.datalake": examples_datalake.md
+  - "Examples":
+    - "spalah.dataframe": examples_dataframe.md
+    - "spalah.datalake": examples_datalake.md
   #- tutorials.md
   #- How-To Guides: how-to-guides.md
   - "Reference":
