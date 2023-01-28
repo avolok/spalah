@@ -2,8 +2,25 @@ site_name: spalah - the collection of pyspark dataframe helpers
 theme:
   name: "material"
   palette:
-    primary: blue grey
-    accent: light blue
+    
+    
+    
+    # Palette toggle for light mode
+    - scheme: default
+      primary: grey
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: grey
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+    
+    
+    
   features:
     - navigation.tabs
     - navigation.tabs.sticky
