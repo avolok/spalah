@@ -1,3 +1,5 @@
+"""This module contains various dataframe specific functions and classes"""
+
 import copy
 from collections import namedtuple
 from pprint import pformat, pprint
@@ -225,11 +227,32 @@ def slice_dataframe(
         debug (bool, optional): For extra debug output. Defaults to False.
 
     Raises:
-        TypeError: If the 'column_to_include' or 'column_to_exclude' are not lists
+        TypeError: If the 'column_to_include' or 'column_to_exclude' are not type list
         ValueError: If the included columns overlay excluded columns, so nothing to return
 
     Returns:
         DataFrame: The processed dataframe
+
+    Examples:
+        >>> from spalah.dataframe import slice_dataframe
+        >>> df = spark.sql(
+        ...         'SELECT 1 as ID, "John" AS Name,
+        ...         struct("line1" AS Line1, "line2" AS Line2) AS Address'
+        ...     )
+        >>> df_sliced = slice_dataframe(
+        ...     input_dataframe=df,
+        ...     columns_to_include=["Name", "Address"],
+        ...     columns_to_exclude=["Address.Line2"]
+        ... )
+
+        As the result, the dataframe will contain only the columns `Name` and `Address.Line1` \
+            because `Name` and `Address` are included and a nested element `Address.Line2` is \
+            excluded
+        >>> df_result.printSchema()
+        root
+        |-- Name: string (nullable = false)
+        |-- Address: struct (nullable = false)
+        |    |-- Line1: string (nullable = false)
     """
 
     projection = []
@@ -292,15 +315,23 @@ def flatten_schema(
     include_datatype: bool = False,
     column_prefix: Union[str, None] = None,
 ) -> list:
-    """Generates the flatten list of columns from the complex dataframe schema
+    """Parses spark dataframe schema and returns the list of columns
+    If the schema is nested, the columns are flattened
 
     Args:
-        schema (StructType): input dataframe's schema
-        include_type (bool, optional): Include column types
-        column_prefix (str, optional): The column name prefix. Defaults to None.
+        schema (StructType): Input dataframe schema
+        include_type (bool, optional): Flag to include column types
+        column_prefix (str, optional): Column name prefix. Defaults to None.
 
     Returns:
         The list of (flattened) column names
+
+    Examples:
+        >>> from spalah.dataframe import flatten_schema
+        >>> flatten_schema(schema=df_complex_schema.schema)
+
+        returns the list of columns, nested are flattened:
+        >>> ['ID', 'Name', 'Address.Line1', 'Address.Line2']
     """
 
     if not isinstance(schema, T.StructType):
@@ -337,8 +368,25 @@ def flatten_schema(
 
 
 def script_dataframe(input_dataframe: DataFrame, suppress_print_output: bool = True) -> str:
+    """Generate a script to recreate the dataframe
+    The script includes the schema and the data
 
-    """Generates a script of a dataframe"""
+    Args:
+        input_dataframe (DataFrame): Input spark dataframe
+        suppress_print_output (bool, optional): Disable prints to console. \
+            Defaults to True.
+
+    Raises:
+        ValueError: when the dataframe is too large (by default > 20 rows)
+
+    Returns:
+        The script to recreate the dataframe
+
+    Examples:
+        >>> from spalah.dataframe import script_dataframe
+        >>> script = script_dataframe(input_dataframe=df)
+        >>> print(script)
+    """
 
     MAX_ROWS_IN_SCRIPT = 20
 
@@ -382,7 +430,25 @@ def script_dataframe(input_dataframe: DataFrame, suppress_print_output: bool = T
 
 
 class SchemaComparer:
+    """
+    The SchemaComparer is to compare two spark dataframe schemas and find matched
+    and not matched columns.
+    """
+
     def __init__(self, source_schema: T.StringType, target_schema: T.StringType) -> None:
+        """Constructs all the necessary input attributes for the SchemaComparer object.
+
+        Args:
+            source_schema (T.StringType): source schema to match
+            target_schema (T.StringType): target schema to match
+
+        Examples:
+            >>> from spalah.dataframe import SchemaComparer
+            >>> schema_comparer = SchemaComparer(
+            ...     source_schema = df_source.schema,
+            ...     target_schema = df_target.schema
+            ... )
+        """
         self._source = self.__import_schema(source_schema)
         self._target = self.__import_schema(target_schema)
         self.matched: List[tuple] = list()
@@ -541,6 +607,7 @@ class SchemaComparer:
         Args:
             input_value (Set[tuple]): The set of tuples with a list of column names and data types
             reason (str): Reason for not match
+
         """
 
         for match in input_value:
@@ -550,8 +617,31 @@ class SchemaComparer:
 
     def compare(self) -> None:
         """
-        Compares the source and target schemas and populates properties
-        'matched' and 'not_matched'
+        Compares the source and target schemas and populates properties `matched` and `not_matched`
+
+        Examples:
+            >>> # instantiate schema_comparer firstly, see example above
+            >>> schema_comparer.compare()
+
+            Get list of all columns that are matched by name and type:
+            >>> schema_comparer.matched
+            [MatchedColumn(name='Address.Line1',  data_type='StringType')]
+
+            Get unmatched columns:
+            >>> schema_comparer.not_matched
+            [
+                NotMatchedColumn(
+                    name='name',
+                    data_type='StringType',
+                    reason="The column exists in source and target schemas but it's name is \
+case-mismatched"
+                ),
+                NotMatchedColumn(
+                    name='Address.Line2',
+                    data_type='StringType',
+                    reason='The column exists only in the source schema'
+                )
+            ]
         """
 
         # Case 1: find columns that are matched by name and type and remove them
