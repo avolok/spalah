@@ -37,11 +37,12 @@ jobs:
         run: poetry install --with docs
 
       - name: Prepare branch gh-pages
+        if: ${{false}}
         run: |
           git branch -D gh-pages || true
           git checkout -t upstream/gh-pages # (change upstream to your actual remote)
           git checkout main
 
       - name: Build docs and publish to a dedicated branch
-        run: poetry run mkdocs gh-deploy
+        run: poetry run mkdocs gh-deploy --force
         working-directory: ${{env.working-directory}}
