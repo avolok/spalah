@@ -31,7 +31,7 @@ extra:
 
 copyright: Copyright &copy; 2022 - 2023 Alex Volok
 
-repo_url: https://github.com/avolok/spalah
+# repo_url: https://github.com/avolok/spalah
 
 plugins:
   - search
