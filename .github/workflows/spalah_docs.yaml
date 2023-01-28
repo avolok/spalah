@@ -8,8 +8,7 @@ on:
       - "spalah/**"
       - "docs/**"
       - "mkdocs.yml"
-  
-  pull_request:
+
 
 concurrency:
   group: ${{ github.ref }}
