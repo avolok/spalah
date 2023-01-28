@@ -38,7 +38,7 @@ jobs:
 
       - name: Prepare branch gh-pages
         run: |
-          git branch -D gh-pages
+          git branch -D gh-pages || true
           git checkout -t upstream/gh-pages # (change upstream to your actual remote)
           git checkout main
 
