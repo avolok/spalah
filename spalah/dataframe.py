@@ -451,8 +451,11 @@ class SchemaComparer:
         """
         self._source = self.__import_schema(source_schema)
         self._target = self.__import_schema(target_schema)
+
         self.matched: List[tuple] = list()
+        """List of matched columns"""
         self.not_matched: List[tuple] = list()
+        """The list of not matched columns"""
 
     def __import_schema(self, input_schema: T.StructType) -> Set[tuple]:
         """Import StructType as the flatten set of tuples: (column_name, data_type)
