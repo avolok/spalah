@@ -3,8 +3,4 @@
     selection:
       filters:
         - "!^__"  
-        - "__init__"   
-
-    
-      
-    
+        - "__init__"  
