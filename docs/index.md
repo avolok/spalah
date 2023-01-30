@@ -13,6 +13,18 @@ It's main feature is to simplify dealing with advanced spark schemas. Think nest
 
 And.. the word "spalah" means "spark" in Ukrainian 🇺🇦 :)
 
+<p align="center">
+    <a href="https://github.com/avolok/spalah/actions/workflows/spalah_ci.yaml" target="_blank">
+        <img src="https://github.com/avolok/spalah/actions/workflows/spalah_ci.yaml/badge.svg" alt="Test">
+    </a>
+    <a href="https://pypi.org/project/spalah" target="_blank">
+        <img src="https://img.shields.io/pypi/v/spalah?color=%2334D058&label=pypi%20package" alt="Package version">
+    </a>
+     <a href="https://github.com/avolok/spalah/blob/main/LICENSE" target="_blank">
+        <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
+    </a>
+</p>
+
 ---------------------------------------
 **Documentation:** [https://avolok.github.io/spalah](https://avolok.github.io/spalah){:target="_blank"} <br />
 **Source Code for spalah:** [https://github.com/avolok/spalah](https://github.com/avolok/spalah){:target="_blank"}
