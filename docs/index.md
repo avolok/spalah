@@ -22,8 +22,12 @@ And.. the word "spalah" means "spark" in Ukrainian 🇺🇦 :)
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install spalah.
 
-```bash
-pip install spalah
+<!-- termynal -->
+
+```
+$ pip install spalah
+---> 100%
+Installed
 ```
 
 ## Examples

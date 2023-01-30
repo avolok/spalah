@@ -2,8 +2,7 @@ site_name: spalah - the collection of pyspark dataframe helpers
 theme:
   name: "material"
   palette:
-    
-    
+
     
     # Palette toggle for light mode
     - scheme: default
@@ -29,15 +28,12 @@ theme:
     - navigation.path
     - navigation.indexes
     - toc.follow
-    # - toc.integrate
     - navigation.top
     - search.suggest
     - search.highlight
     - header.autohide    
     - navigation.footer
     - content.code.copy
-  #icon:
-  #  logo: bootstrap/envelope-paper
 
 extra:
   social:
@@ -53,6 +49,7 @@ copyright: Copyright &copy; 2022 - 2023 Alex Volok
 plugins:
   - search
   - autorefs
+  - termynal
   - mkdocstrings:
       handlers:
         python:
@@ -83,9 +80,6 @@ nav:
   - "Examples":
     - "spalah.dataframe": examples_dataframe.md
     - "spalah.datalake": examples_datalake.md
-  #- tutorials.md
-  #- How-To Guides: how-to-guides.md
   - "Reference":
     - "spalah.dataframe": reference_dataframe.md
     - "spalah.datalake": reference_datalake.md
-  #- explanation.md
