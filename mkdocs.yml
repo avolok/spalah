@@ -1,9 +1,10 @@
 site_name: spalah - the collection of pyspark dataframe helpers
 theme:
   name: "material"
-  palette:
-
-    
+  font:
+    text: DM Sans
+    code: DM Mono
+  palette:    
     # Palette toggle for light mode
     - scheme: default
       primary: grey
