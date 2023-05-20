@@ -91,11 +91,9 @@ def __process_schema_node(
 
     # Structs
     if isinstance(node.dataType, T.StructType):
-
         children = []
 
         for field in node.dataType.fields:
-
             if isinstance(field.dataType, T.StructType) and array_element is not None:
                 array_col_child = array_element[field.name]
             elif array_element is not None:
@@ -127,7 +125,6 @@ def __process_schema_node(
         # to include this node only when it must appear in the final projection
         (nullify_only or include_this_node)
     ):
-
         children = []
 
         def _transform_array(array_element: F.col) -> F.col:
@@ -147,7 +144,9 @@ def __process_schema_node(
 
             # removes the name of the array node from the element path
             # because the existence of the array does not create a new level in the path
-            column_prefix_new = __remove_suffix(__remove_suffix(column_prefix, node_name), ".")
+            column_prefix_new = __remove_suffix(
+                __remove_suffix(column_prefix, node_name), "."
+            )
 
             struct_extracted_from_array_element = __process_schema_node(
                 node=struct_in_array_node,
@@ -168,13 +167,12 @@ def __process_schema_node(
         else:
             array_path = array_element[node_name]
 
-        col_expression = F.transform(array_path, lambda x: _transform_array(array_element=x)).alias(
-            node_name
-        )
+        col_expression = F.transform(
+            array_path, lambda x: _transform_array(array_element=x)
+        ).alias(node_name)
 
     # Regular columns
     else:
-
         # get node data type
         # In case of nullification of array it converted to a string null value
         if isinstance(node.dataType, T.ArrayType):
@@ -200,7 +198,6 @@ def __process_schema_node(
     if include_this_node and not is_struct_without_children:
         return col_expression
     if not include_this_node and nullify_only:
-
         if is_struct:
             return col_expression
         else:
@@ -267,8 +264,12 @@ def slice_dataframe(
     if not (type(columns_to_include) is list and type(columns_to_exclude) is list):
         raise TypeError("'columns_to_include' and 'columns_to_exclude' must be a list")
 
-    if not all(isinstance(item, str) for item in columns_to_include + columns_to_exclude):
-        raise TypeError("Member of 'columns_to_include' and 'columns_to_exclude' must be a string")
+    if not all(
+        isinstance(item, str) for item in columns_to_include + columns_to_exclude
+    ):
+        raise TypeError(
+            "Member of 'columns_to_include' and 'columns_to_exclude' must be a string"
+        )
 
     if debug:
         print("The list of columns to include:")
@@ -367,7 +368,9 @@ def flatten_schema(
     return columns
 
 
-def script_dataframe(input_dataframe: DataFrame, suppress_print_output: bool = True) -> str:
+def script_dataframe(
+    input_dataframe: DataFrame, suppress_print_output: bool = True
+) -> str:
     """Generate a script to recreate the dataframe
     The script includes the schema and the data
 
@@ -394,7 +397,8 @@ def script_dataframe(input_dataframe: DataFrame, suppress_print_output: bool = T
 
     if __dataframe.count() > MAX_ROWS_IN_SCRIPT:
         raise ValueError(
-            "This method is limited to script up " f"to {MAX_ROWS_IN_SCRIPT} row(s) per call"
+            "This method is limited to script up "
+            f"to {MAX_ROWS_IN_SCRIPT} row(s) per call"
         )
 
     __schema = input_dataframe.schema.jsonValue()
@@ -435,7 +439,9 @@ class SchemaComparer:
     and not matched columns.
     """
 
-    def __init__(self, source_schema: T.StringType, target_schema: T.StringType) -> None:
+    def __init__(
+        self, source_schema: T.StringType, target_schema: T.StringType
+    ) -> None:
         """Constructs all the necessary input attributes for the SchemaComparer object.
 
         Args:
@@ -586,9 +592,13 @@ class SchemaComparer:
     def __process_remaining_non_matched_columns(self) -> None:
         """Process remaining not matched columns"""
 
-        self.__populate_not_matched(self._source, "The column exists only in the source schema")
+        self.__populate_not_matched(
+            self._source, "The column exists only in the source schema"
+        )
 
-        self.__populate_not_matched(self._target, "The column exists only in the target schema")
+        self.__populate_not_matched(
+            self._target, "The column exists only in the target schema"
+        )
 
         self.__remove_matched_by_name(self._source)
         self.__remove_matched_by_name(self._target)

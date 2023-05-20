@@ -1,6 +1,6 @@
 import pytest
 from pyspark.sql import DataFrame, Row
-from spalah.dataframe import script_dataframe
+from spalah.dataframe.dataframe import script_dataframe
 
 
 def test_script_dataframe(spark, flat_dataset: DataFrame) -> None:

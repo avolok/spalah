@@ -118,8 +118,22 @@ root
     ]
     """
     ```
+### Set Delta Table properties and check constraints
 
-See more examples in [examples: dataframes](examples_dataframe.md) and [examples: datalake](examples_datalake.md)
+```python
+from spalah.dataset import DeltaProperty
+
+dp = DeltaProperty(table_path="/tmp/nested_schema_dataset")
+
+dp.properties = {
+    "delta.logRetentionDuration": "interval 10 days",
+    "delta.deletedFileRetentionDuration": "interval 15 days"
+}
+dp.check_constraints = {'id_is_not_null': 'id is not null'} 
+```
+
+
+See more examples in [examples: dataframes](examples/dataframe.md) and [examples: dataset](examples/dataset.md)
 
 ## License
 This project is licensed under the terms of the MIT license.

@@ -1,7 +1,7 @@
 from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 import pytest
-from spalah.dataframe import SchemaComparer, MatchedColumn, NotMatchedColumn
+from spalah.dataframe.dataframe import SchemaComparer, MatchedColumn, NotMatchedColumn
 
 
 def test_SchemaComparer_equal_schema(flat_dataset: DataFrame) -> None:
@@ -52,7 +52,9 @@ def test_SchemaComparer_compare_different_schemas(flat_dataset: DataFrame) -> No
             "matched by a data type",
         ),
         NotMatchedColumn(
-            name="a", data_type="LongType()", reason="The column exists only in the source schema"
+            name="a",
+            data_type="LongType()",
+            reason="The column exists only in the source schema",
         ),
         NotMatchedColumn(
             name="z",
@@ -62,7 +64,9 @@ def test_SchemaComparer_compare_different_schemas(flat_dataset: DataFrame) -> No
     }
 
 
-def test_SchemaComparer_compare_exception_passed_dataframe(flat_dataset: DataFrame) -> None:
+def test_SchemaComparer_compare_exception_passed_dataframe(
+    flat_dataset: DataFrame,
+) -> None:
     """Two equal schemas must result into all matched columns"""
 
     df1 = flat_dataset
@@ -78,7 +82,9 @@ def test_SchemaComparer_compare_exception_passed_dataframe(flat_dataset: DataFra
     )
 
 
-def test_SchemaComparer_compare_exception_passed_string(flat_dataset: DataFrame) -> None:
+def test_SchemaComparer_compare_exception_passed_string(
+    flat_dataset: DataFrame,
+) -> None:
     """Two equal schemas must result into all matched columns"""
 
     df1 = flat_dataset

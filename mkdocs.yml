@@ -54,9 +54,11 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
-          options:
-            merge_init_into_class: true
-            show_root_toc_entry: false
+          paths: [spalah]
+          # show_root_heading: true
+          #options:
+          #  merge_init_into_class: true
+          #  show_root_toc_entry: true
 
 
 markdown_extensions:
@@ -79,8 +81,10 @@ markdown_extensions:
 nav:
   - Spalah: index.md
   - "Examples":
-    - "spalah.dataframe": examples_dataframe.md
-    - "spalah.datalake": examples_datalake.md
+    - "spalah.dataframe": examples/dataframe.md
+    - "spalah.dataset": examples/dataset.md
+
   - "Reference":
-    - "spalah.dataframe": reference_dataframe.md
-    - "spalah.datalake": reference_datalake.md
+    - "spalah.dataframe": reference/dataframe.md
+    - "spalah.dataset.DeltaProperty":  reference/dataset/DeltaProperty.md
+    - "spalah.dataset.dbfs":  reference/dataset/dbfs.md

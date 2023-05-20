@@ -13,32 +13,26 @@ repos:
       - id: debug-statements
       - id: check-yaml
       - id: check-ast
-
-  - repo: https://github.com/pycqa/flake8
-    rev: '6.0.0'
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.259'
     hooks:
-    -   id: flake8
-        args: # arguments to configure flake8        
-        - "--max-line-length=100"
-  - repo: https://github.com/ambv/black
-    rev: 22.12.0 
+      - id: ruff
+        name: "🧹 Lint code with Ruff"
+        files: thor/
+  - repo: https://github.com/psf/black
+    rev: 23.1.0
     hooks:
       - id: black
-        args: [--line-length=100]
+        name: "⚫ Format code with Black"
+        args:
+          - --safe
+          - --quiet
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.991
     hooks:
       - id: mypy
-        additional_dependencies: [types-PyYAML]
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.3.1
-    hooks:
-      - id: pyupgrade
-        name: Check for code that can use new Python features
-        args: [--py37-plus]
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    # Ruff version.
-    rev: 'v0.0.229'
-    hooks:
-    - id: ruff
+        name: "🆎 Static type checking using mypy"
+        files: thor/
+        additional_dependencies: [types-PyYAML]        
+        args: [--no-strict-optional]
   
