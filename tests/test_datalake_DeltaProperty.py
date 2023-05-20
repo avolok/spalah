@@ -180,7 +180,7 @@ def test_set_table_constraint_on_new_table_with_existing_constraint(
     spark.sql(_sql)
 
     dp = DeltaProperty(table_path=delta_path, spark_session=spark)
-    dp.keep_existing_constraints = keep_existing
+    dp.keep_existing_check_constraints = keep_existing
 
     dp.check_constraints = constraint_to_set
 
