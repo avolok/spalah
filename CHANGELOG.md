@@ -2,6 +2,17 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.0 (2023-05-20)
+### Documentation
+* Update font ([#28](https://github.com/avolok/spalah/issues/28)) ([`958998c`](https://github.com/avolok/spalah/commit/958998cf3527cf9d7ffafd692c9110ff580a88ce))
+* Add badges ([#27](https://github.com/avolok/spalah/issues/27)) ([`08a0f36`](https://github.com/avolok/spalah/commit/08a0f36ef85175ae553353c38cab8d88f56d715d))
+* Update index page ([#25](https://github.com/avolok/spalah/issues/25)) ([`a77d723`](https://github.com/avolok/spalah/commit/a77d7230af2add303cb7a2981b7c4fb5d64a3ed1))
+* Enable light/dark mode toggle ([#24](https://github.com/avolok/spalah/issues/24)) ([`0f896ce`](https://github.com/avolok/spalah/commit/0f896ce24daba311380c82db14e481d1b3c4104b))
+* Enable example pages ([#23](https://github.com/avolok/spalah/issues/23)) ([`f885daf`](https://github.com/avolok/spalah/commit/f885daf0fb37dc2403b2d2c45da32a4799ef4248))
+* Remove git link from the header ([#22](https://github.com/avolok/spalah/issues/22)) ([`e2427a1`](https://github.com/avolok/spalah/commit/e2427a1ea51a224355b327893cf28ad2a25e58c3))
+* Added docstring to dataframe and datalake modules ([#20](https://github.com/avolok/spalah/issues/20)) ([`5ce42c1`](https://github.com/avolok/spalah/commit/5ce42c145878bce94e17ab3ccbc279562e8db055))
+* Enable mkdocs ([#18](https://github.com/avolok/spalah/issues/18)) ([`127ce85`](https://github.com/avolok/spalah/commit/127ce85d1df75bb4f2f68e9e159d36ee4c0098e3))
+
 ## v0.5.0 (2023-01-22)
 ### Feature
 * Slice_dataframe, add a support of arrays ([#13](https://github.com/avolok/spalah/issues/13)) ([`de80906`](https://github.com/avolok/spalah/commit/de8090680916081956f95d41c2585b0877a8dbbd))
