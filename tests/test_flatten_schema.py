@@ -1,5 +1,5 @@
 import pytest
-from spalah.dataframe import flatten_schema
+from spalah.dataframe.dataframe import flatten_schema
 
 
 @pytest.mark.parametrize(
@@ -66,7 +66,6 @@ def test_flatten_schema(
     expected,
     request,
 ) -> None:
-
     dataset = request.getfixturevalue(input_dataset)
     actual = flatten_schema(schema=dataset.schema, include_datatype=include_datatype)
 

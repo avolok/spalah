@@ -1,7 +1,7 @@
 import pytest
 from pyspark.sql import Row
 
-from spalah.dataframe import slice_dataframe
+from spalah.dataframe.dataframe import slice_dataframe
 
 
 @pytest.mark.parametrize(
@@ -18,7 +18,8 @@ from spalah.dataframe import slice_dataframe
             Row(
                 column_a=1,
                 column_c=Row(
-                    column_c_1="c1", column_c_2=Row(c_2_1="c_2_1", c_2_2="c_2_2", c_2_3="c_2_3")
+                    column_c_1="c1",
+                    column_c_2=Row(c_2_1="c_2_1", c_2_2="c_2_2", c_2_3="c_2_3"),
                 ),
             ),
         ),
@@ -33,7 +34,8 @@ from spalah.dataframe import slice_dataframe
             Row(
                 column_a=1,
                 column_c=Row(
-                    column_c_1="c1", column_c_2=Row(c_2_1="c_2_1", c_2_2="c_2_2", c_2_3="c_2_3")
+                    column_c_1="c1",
+                    column_c_2=Row(c_2_1="c_2_1", c_2_2="c_2_2", c_2_3="c_2_3"),
                 ),
             ),
         ),
@@ -47,7 +49,9 @@ from spalah.dataframe import slice_dataframe
             False,
             Row(
                 column_b=2.0,
-                column_c=Row(column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")),
+                column_c=Row(
+                    column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")
+                ),
             ),
         ),
         # "nested structs: exclude"
@@ -59,7 +63,9 @@ from spalah.dataframe import slice_dataframe
             False,
             Row(
                 column_a=1,
-                column_c=Row(column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")),
+                column_c=Row(
+                    column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")
+                ),
             ),
         ),
         # "nested structs: exclude, mixed case"
@@ -71,7 +77,9 @@ from spalah.dataframe import slice_dataframe
             False,
             Row(
                 column_a=1,
-                column_c=Row(column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")),
+                column_c=Row(
+                    column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")
+                ),
             ),
         ),
         # "nested structs: nullify only for excluded columns"
@@ -85,7 +93,8 @@ from spalah.dataframe import slice_dataframe
                 column_a=1,
                 column_b=None,
                 column_c=Row(
-                    column_c_1="c1", column_c_2=Row(c_2_1=None, c_2_2="c_2_2", c_2_3="c_2_3")
+                    column_c_1="c1",
+                    column_c_2=Row(c_2_1=None, c_2_2="c_2_2", c_2_3="c_2_3"),
                 ),
             ),
         ),
@@ -316,7 +325,6 @@ def test_slice_dataframe(
     expected,
     request,
 ) -> None:
-
     dataset = request.getfixturevalue(input_dataset)
 
     actual = slice_dataframe(
@@ -335,9 +343,13 @@ def test_slice_dataframe_invalid_parameters(request):
 
     with pytest.raises(Exception) as e:
         slice_dataframe(
-            input_dataframe=dataset, columns_to_include="a", columns_to_exclude=("b", "c")
+            input_dataframe=dataset,
+            columns_to_include="a",
+            columns_to_exclude=("b", "c"),
         )
-    assert str(e.value).startswith("'columns_to_include' and 'columns_to_exclude' must be a list")
+    assert str(e.value).startswith(
+        "'columns_to_include' and 'columns_to_exclude' must be a list"
+    )
 
 
 def test_slice_dataframe_invalid_parameters2(request):
@@ -354,5 +366,7 @@ def test_slice_dataframe_invalid_parameters3(request):
     dataset = request.getfixturevalue("flat_dataset")
 
     with pytest.raises(Exception) as e:
-        slice_dataframe(input_dataframe=dataset, columns_to_include=["a"], columns_to_exclude=["a"])
+        slice_dataframe(
+            input_dataframe=dataset, columns_to_include=["a"], columns_to_exclude=["a"]
+        )
     assert str(e.value).startswith("At least one column should be listed")

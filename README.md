@@ -1,6 +1,6 @@
 # spalah
 
-Spalah is a set of python helpers to deal with PySpark dataframes, transformations, schemas etc.
+Spalah is a set of python helpers to deal with PySpark dataframes, transformations, schemas and Delta Tables.
 
 The word "spalah" means "spark" in Ukrainian 🇺🇦 
 
@@ -153,44 +153,45 @@ schema_comparer.not_matched
 """
 ```
 
-## spalah.datalake
+## spalah.dataset
 
-### get_delta_properties
+### Get delta table properties
 
 ```python
-from spalah.datalake import get_delta_properties
+from spalah.dataset import DeltaProperty
 
-table_properties = get_delta_properties(table_path="/path/dataset")
+dp = DeltaProperty(table_path="/path/dataset")
 
-print(table_properties) 
+print(dp.properties) 
 
 # output: 
 # {'delta.deletedFileRetentionDuration': 'interval 15 days'}
 ```
 
-### set_delta_properties
+### Set delta table properties
 
 ```python
-from spalah.datalake import set_delta_properties
+rom spalah.dataset import DeltaProperty
 
-set_delta_properties(
-    table_path='/path/dataset',
-    properties={
-        "delta.logRetentionDuration": "interval 10 days",
-        "delta.deletedFileRetentionDuration": "interval 15 days"
-    }
-)
+dp = DeltaProperty(table_path="/path/dataset")
+
+dp.properties = {
+    "delta.logRetentionDuration": "interval 10 days",
+    "delta.deletedFileRetentionDuration": "interval 15 days"
+}
+
 ```
 and the standard output is:
+
 ```
-Applying table properties on 'delta.`/path/dataset`':
- - Checking if 'delta.logRetentionDuration = interval 10 days' is set on delta.`/path/dataset`
-   Result: The property has been set
- - Checking if 'delta.deletedFileRetentionDuration = interval 15 days' is set on delta.`/path/dataset`
-   Result: The property has been set
+2023-05-20 18:27:42,070 INFO      Applying check constraints on 'delta.`/tmp/nested_schema_dataset`':
+2023-05-20 18:27:42,071 INFO      Checking if constraint 'id_is_not_null' was already set on delta.`/tmp/nested_schema_dataset`
+2023-05-20 18:27:42,433 INFO      The constraint id_is_not_null has been successfully added to 'delta.`/tmp/nested_schema_dataset`
 ```
 
-Check for more information in [examples: dataframe](docs/examples_dataframe.md), [examples: datalake](docs/examples_datalake.md) pages and related [notebook](docs/usage.ipynb)
+Please note that check constraints can be retrieved and set using property: `.check_constraints`
+
+Check for more information in [examples: dataframe](docs/examples/dataframe.md), [examples: datalake](docs/examples/dataset.md) pages and related [notebook](docs/usage.ipynb)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
