@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.1 (2023-05-21)
+
+
 ## v1.0.0 (2023-05-20)
 ### Documentation
 * Update font ([#28](https://github.com/avolok/spalah/issues/28)) ([`958998c`](https://github.com/avolok/spalah/commit/958998cf3527cf9d7ffafd692c9110ff580a88ce))
