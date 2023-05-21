@@ -12,19 +12,21 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.8.1,<4.0.0"
-black = "==22.3.0"
-bump2version = "==1.0.1"
-coverage = "==6.4.1"
-delta-spark = "==2.1.0"
+pyspark = ">=3.2.0,<4"
+delta-spark = ">=2.1.0,<2.4"
+
+[tool.poetry.dev-dependencies]
+black = ">=22.3.0"
+bump2version = ">=1.0.1,<7"
+coverage = ">=6.4.1"
 flake8 = "==6.0.0"
 packaging = "*"
 pip = "*"
-pre-commit = "==2.19.0"
-pyspark = "==3.3.0"
-pytest = "==7.1.2"
-pytest-cov = "==3.0.0"
+pre-commit = ">=2.19.0,<3"
+pytest = ">=7.1.2,<7.2"
+pytest-cov = ">=3.0.0,<4"
 ruff = "*"
-tox = "==3.25.0"
+tox = ">=3.25.0,<4"
 twine = "==4.0.1"
 watchdog = "==2.1.9"
 wheel = "*"
@@ -33,7 +35,7 @@ wheel = "*"
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "^9.1.13"
 mkdocstrings = {extras = ["python"], version = "^0.20.0"}
-mkdocs = ">=1.4.3"
+mkdocs = ">=1.4.3,<1.5.0"
 termynal = ">=0.2.1"
 
 [tool.semantic_release]
