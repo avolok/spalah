@@ -121,9 +121,9 @@ root
 ### Set Delta Table properties and check constraints
 
 ```python
-from spalah.dataset import DeltaProperty
+from spalah.dataset import DeltaTableConfig
 
-dp = DeltaProperty(table_path="/tmp/nested_schema_dataset")
+dp = DeltaTableConfig(table_path="/tmp/nested_schema_dataset")
 
 dp.properties = {
     "delta.logRetentionDuration": "interval 10 days",

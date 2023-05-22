@@ -14,7 +14,7 @@
       separate_signature: false
       members:
       - check_dbfs_mounts
-      - DeltaProperty
+      - DeltaTableConfig
     selection:
       filters:
         - "!^__"  

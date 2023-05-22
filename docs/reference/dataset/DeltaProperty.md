@@ -1,4 +1,4 @@
-::: spalah.dataset.DeltaProperty.DeltaProperty
+::: spalah.dataset.DeltaTableConfig.DeltaTableConfig
     handler: python
     options:
       heading_level: 2            

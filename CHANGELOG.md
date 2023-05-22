@@ -4,8 +4,14 @@
 
 ## v1.0.1 (2023-05-21)
 
+### Fix
+*   ci: update poetry dependencies, place dev packages to own group ([#31](https://github.com/avolok/spalah/issues/31)) ([`2c03f40`](https://github.com/avolok/spalah/commit/2c03f402fe86fab9246432aea9365b3d46990617))
 
 ## v1.0.0 (2023-05-20)
+### Breaking Change
+* spalah.dataset replaces spalah.datalake ([#29](https://github.com/avolok/spalah/issues/29)) ([`bad67e2`](https://github.com/avolok/spalah/commit/bad67e22fec7084f700b121663c032e622ad0410))
+* get_delta_property and set_delta_property are replaced by DeltaTableConfig object
+
 ### Documentation
 * Update font ([#28](https://github.com/avolok/spalah/issues/28)) ([`958998c`](https://github.com/avolok/spalah/commit/958998cf3527cf9d7ffafd692c9110ff580a88ce))
 * Add badges ([#27](https://github.com/avolok/spalah/issues/27)) ([`08a0f36`](https://github.com/avolok/spalah/commit/08a0f36ef85175ae553353c38cab8d88f56d715d))

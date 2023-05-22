@@ -1,6 +1,6 @@
 import pytest
 from pathlib import Path
-from spalah.dataset import DeltaProperty
+from spalah.dataset import DeltaTableConfig
 from pyspark.sql import SparkSession
 
 
@@ -16,7 +16,7 @@ def test_get_delta_properties(spark: SparkSession, tmp_path: Path) -> None:
     """
     spark.sql(_sql)
 
-    dp = DeltaProperty(table_path=delta_path, spark_session=spark)
+    dp = DeltaTableConfig(table_path=delta_path, spark_session=spark)
 
     existing_properties = dp.properties
 
@@ -29,7 +29,7 @@ def test_set_table_properties_exceptions_both_provided_as_identifier() -> None:
     "When both table_path and table_name provided the exception must occur"
 
     with pytest.raises(ValueError) as e:
-        DeltaProperty(table_path="/some/path", table_name="tbl_name").properties
+        DeltaTableConfig(table_path="/some/path", table_name="tbl_name").properties
     assert str(e.value).startswith("Both 'table_path' and 'table_name' provided")
 
 
@@ -37,7 +37,7 @@ def test_set_table_properties_exceptions_noting_provided_as_identifier() -> None
     "When neither table_path nor table_name provided the exception must occur"
 
     with pytest.raises(ValueError) as e:
-        DeltaProperty(table_path="", table_name="").properties
+        DeltaTableConfig(table_path="", table_name="").properties
     assert str(e.value).startswith("Neither 'table_path' nor 'table_name' provided")
 
 
@@ -55,7 +55,7 @@ def test_set_table_properties_new_table_no_existing_properties(
 
     spark.range(0, 1).write.format("delta").mode("overwrite").save(delta_path)
 
-    dp = DeltaProperty(table_path=delta_path)
+    dp = DeltaTableConfig(table_path=delta_path)
     dp.properties = properties_to_set
 
     assert properties_to_set == dp.properties
@@ -82,7 +82,7 @@ def test_set_table_properties_new_table_with_existing_properties(
     )
     spark.sql(_sql)
 
-    dp = DeltaProperty(table_path=delta_path)
+    dp = DeltaTableConfig(table_path=delta_path)
     dp.keep_existing_properties = True
     dp.properties = properties_to_set
 
@@ -112,7 +112,7 @@ def test_set_table_properties_new_table_remove_existing(
     )
     spark.sql(_sql)
 
-    dp = DeltaProperty(table_path=delta_path)
+    dp = DeltaTableConfig(table_path=delta_path)
     dp.keep_existing_properties = False
     dp.properties = properties_to_set
 
@@ -131,7 +131,7 @@ def test_get_delta_constraints(spark: SparkSession, tmp_path: Path) -> None:
     """
     spark.sql(_sql)
 
-    dp = DeltaProperty(table_path=delta_path, spark_session=spark)
+    dp = DeltaTableConfig(table_path=delta_path, spark_session=spark)
     existing_constraints = dp.check_constraints
     expected_constraints = {"id_is_not_null": "id is not null"}
 
@@ -179,7 +179,7 @@ def test_set_table_constraint_on_new_table_with_existing_constraint(
     """
     spark.sql(_sql)
 
-    dp = DeltaProperty(table_path=delta_path, spark_session=spark)
+    dp = DeltaTableConfig(table_path=delta_path, spark_session=spark)
     dp.keep_existing_check_constraints = keep_existing
 
     dp.check_constraints = constraint_to_set
