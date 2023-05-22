@@ -117,7 +117,12 @@ print(dp.check_constraints)
 The following check shows that the constraint `id_is_not_null` is already set and protects the column ID from being null:
 
 ```python
-spark.sql("insert into delta.`/tmp/nested_schema_dataset` (ID, Name, Address) VALUES (NULL, 'Alex', NULL) ")
+spark.sql(
+    """
+    INSERT INTO delta.`/tmp/nested_schema_dataset` (ID, Name, Address)
+    VALUES (NULL, 'Alex', NULL) 
+    """
+)
 
 ERROR Utils: Aborting task
 org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: 
