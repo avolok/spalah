@@ -158,9 +158,9 @@ schema_comparer.not_matched
 ### Get delta table properties
 
 ```python
-from spalah.dataset import DeltaProperty
+from spalah.dataset import DeltaTableConfig
 
-dp = DeltaProperty(table_path="/path/dataset")
+dp = DeltaTableConfig(table_path="/path/dataset")
 
 print(dp.properties) 
 
@@ -171,9 +171,9 @@ print(dp.properties)
 ### Set delta table properties
 
 ```python
-rom spalah.dataset import DeltaProperty
+rom spalah.dataset import DeltaTableConfig
 
-dp = DeltaProperty(table_path="/path/dataset")
+dp = DeltaTableConfig(table_path="/path/dataset")
 
 dp.properties = {
     "delta.logRetentionDuration": "interval 10 days",

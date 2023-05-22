@@ -86,5 +86,5 @@ nav:
 
   - "Reference":
     - "spalah.dataframe": reference/dataframe.md
-    - "spalah.dataset.DeltaProperty":  reference/dataset/DeltaProperty.md
+    - "spalah.dataset.DeltaTableConfig":  reference/dataset/DeltaTableConfig.md
     - "spalah.dataset.dbfs":  reference/dataset/dbfs.md

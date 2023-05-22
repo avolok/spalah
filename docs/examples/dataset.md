@@ -1,19 +1,19 @@
 # Examples of use: spalah.dataset
 
 
-This module contains various storage and dataset specific functions, like: `DeltaProperty`, `check_dbfs_mounts` etc. 
+This module contains various storage and dataset specific functions, like: `DeltaTableConfig`, `check_dbfs_mounts` etc. 
 
 
-## DeltaProperty
+## DeltaTableConfig
 
 
 ### Retrieve delta table properties
 
 
 ```python
-from spalah.dataset import DeltaProperty
+from spalah.dataset import DeltaTableConfig
 
-dp = DeltaProperty(table_path="/tmp/nested_schema_dataset")
+dp = DeltaTableConfig(table_path="/tmp/nested_schema_dataset")
 
 print(dp.properties)
 
@@ -25,9 +25,9 @@ print(dp.properties)
 
 
 ```python
-from spalah.dataset import DeltaProperty
+from spalah.dataset import DeltaTableConfig
 
-dp = DeltaProperty(table_path="/tmp/nested_schema_dataset")
+dp = DeltaTableConfig(table_path="/tmp/nested_schema_dataset")
 
 dp.properties = {
     "delta.logRetentionDuration": "interval 10 days",
@@ -49,9 +49,9 @@ If the existing properties to be preserved use parameter `keep_existing_properti
 
 
 ```python
-from spalah.dataset import DeltaProperty
+from spalah.dataset import DeltaTableConfig
 
-dp = DeltaProperty(table_path="/tmp/nested_schema_dataset")
+dp = DeltaTableConfig(table_path="/tmp/nested_schema_dataset")
 
 dp.keep_existing_properties = True
 
@@ -66,9 +66,9 @@ dp.properties = {
 
 
 ```python
-from spalah.dataset import DeltaProperty
+from spalah.dataset import DeltaTableConfig
 
-dp = DeltaProperty(table_path="/tmp/nested_schema_dataset")
+dp = DeltaTableConfig(table_path="/tmp/nested_schema_dataset")
 
 print(dp.check_constraints)
 
@@ -79,9 +79,9 @@ print(dp.check_constraints)
 
 
 ```python
-from spalah.dataset import DeltaProperty
+from spalah.dataset import DeltaTableConfig
 
-dp = DeltaProperty(table_path="/tmp/nested_schema_dataset")
+dp = DeltaTableConfig(table_path="/tmp/nested_schema_dataset")
 
 dp.check_constraints = {'id_is_not_null': 'id is not null'} 
 ```
@@ -98,9 +98,9 @@ If the existing constraints to be preserved use parameter `keep_existing_check_c
 
 
 ```python
-from spalah.dataset import DeltaProperty
+from spalah.dataset import DeltaTableConfig
 
-dp = DeltaProperty(table_path="/tmp/nested_schema_dataset")
+dp = DeltaTableConfig(table_path="/tmp/nested_schema_dataset")
 dp.keep_existing_check_constraints = True
 
 dp.check_constraints = {'Name_is_not_null': 'Name is not null'} 
@@ -117,7 +117,12 @@ print(dp.check_constraints)
 The following check shows that the constraint `id_is_not_null` is already set and protects the column ID from being null:
 
 ```python
-spark.sql("insert into delta.`/tmp/nested_schema_dataset` (ID, Name, Address) VALUES (NULL, 'Alex', NULL) ")
+spark.sql(
+    """
+    INSERT INTO delta.`/tmp/nested_schema_dataset` (ID, Name, Address)
+    VALUES (NULL, 'Alex', NULL) 
+    """
+)
 
 ERROR Utils: Aborting task
 org.apache.spark.sql.delta.schema.DeltaInvariantViolationException: 

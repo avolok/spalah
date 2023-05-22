@@ -7,7 +7,7 @@ from spalah.shared.logging import get_logger
 logger = get_logger(__name__)
 
 
-class DeltaProperty:
+class DeltaTableConfig:
     """
     Manages Delta Table properties, constraints, etc.
 
@@ -39,8 +39,8 @@ class DeltaProperty:
             ValueError: if values for neither 'table_path' nor 'table_name' provided
                         provide values to one of them
         Examples:
-            >>> from spalah.datalake import DeltaProperty
-            >>> dp = DeltaProperty(table_path="/path/dataset")
+            >>> from spalah.datalake import DeltaTableConfig
+            >>> dp = DeltaTableConfig(table_path="/path/dataset")
             >>> print(dp.properties)
             {'delta.deletedFileRetentionDuration': 'interval 15 days'}
         """
@@ -92,8 +92,8 @@ class DeltaProperty:
             value (dict):  An input dictionary in the format: `{"property_name": "value"}`
 
         Examples:
-            >>> from spalah.datalake import DeltaProperty
-            >>> dp = DeltaProperty(table_path="/path/dataset")
+            >>> from spalah.datalake import DeltaTableConfig
+            >>> dp = DeltaTableConfig(table_path="/path/dataset")
             >>>
             >>> # get existing properties
             >>> print(dp.properties)
@@ -164,8 +164,8 @@ class DeltaProperty:
             value (dict):  An input dictionary in the format: `{"property_name": "value"}`
 
         Examples:
-            >>> from spalah.datalake import DeltaProperty
-            >>> dp = DeltaProperty(table_path="/path/dataset")
+            >>> from spalah.datalake import DeltaTableConfig
+            >>> dp = DeltaTableConfig(table_path="/path/dataset")
             >>>
             >>> # get existing constraints
             >>> print(dp.check_constraints)
