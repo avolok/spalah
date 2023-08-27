@@ -341,25 +341,25 @@ def test_slice_dataframe(
 def test_slice_dataframe_invalid_parameters(request):
     dataset = request.getfixturevalue("flat_dataset")
 
-    with pytest.raises(Exception) as e:
+    with pytest.raises(
+        Exception,
+        match="The type of parameters 'columns_to_include', 'columns_to_exclude' must be a list",
+    ):
         slice_dataframe(
             input_dataframe=dataset,
             columns_to_include="a",
             columns_to_exclude=("b", "c"),
         )
-    assert str(e.value).startswith(
-        "'columns_to_include' and 'columns_to_exclude' must be a list"
-    )
 
 
 def test_slice_dataframe_invalid_parameters2(request):
     dataset = request.getfixturevalue("flat_dataset")
 
-    with pytest.raises(Exception) as e:
+    with pytest.raises(
+        Exception,
+        match="Members of 'columns_to_include' and 'columns_to_exclude' must be a string",
+    ):
         slice_dataframe(input_dataframe=dataset, columns_to_include=[1, "a", None])
-    assert str(e.value).startswith(
-        "Member of 'columns_to_include' and" " 'columns_to_exclude' must be a string"
-    )
 
 
 def test_slice_dataframe_invalid_parameters3(request):
