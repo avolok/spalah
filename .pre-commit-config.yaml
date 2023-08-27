@@ -14,7 +14,7 @@ repos:
       - id: check-yaml
       - id: check-ast
   - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: 'v0.0.259'
+    rev: 'v0.0.286'
     hooks:
       - id: ruff
         name: "🧹 Lint code with Ruff"

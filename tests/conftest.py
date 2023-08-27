@@ -1,22 +1,47 @@
 from datetime import date, datetime
 import pytest
 from pyspark.sql import DataFrame, Row, SparkSession
-from delta import configure_spark_with_delta_pip
 
 
 @pytest.fixture(scope="session")
 def spark():
-    builder = (
-        SparkSession.builder.appName("MyApp")
+    app_name = "spalah-ci"
+
+    spark_jars = "io.delta:delta-core_2.12:2.3.0"
+
+    spark = (
+        SparkSession.builder.master("local[*]")
+        .appName(app_name)
+        .config("spark.jars.packages", spark_jars)
         .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
         .config(
-            "spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog"
+            "spark.sql.catalog.spark_catalog",
+            "org.apache.spark.sql.delta.catalog.DeltaCatalog",
         )
     )
 
-    spark = configure_spark_with_delta_pip(builder).getOrCreate()
+    # to speed up tests
+    spark = (
+        spark.config("spark.sql.shuffle.partitions", "1")
+        .config("spark.databricks.delta.snapshotPartitions", "2")
+        .config("spark.ui.showConsoleProgress", "false")
+        .config("spark.ui.enabled", "false")
+        .config("spark.ui.dagGraph.retainedRootRDDs", "1")
+        .config("spark.ui.retainedJobs", "1")
+        .config("spark.ui.retainedStages", "1")
+        .config("spark.ui.retainedTasks", "1")
+        .config("spark.sql.ui.retainedExecutions", "1")
+        .config("spark.worker.ui.retainedExecutors", "1")
+        .config("spark.worker.ui.retainedDrivers", "1")
+        .config("spark.driver.memory", "2g")
+        .config("spark.driver.extraJavaOptions", "-Ddelta.log.cacheSize=3")
+        .config(
+            "spark.driver.extraJavaOptions",
+            "-XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops",
+        )
+    )
 
-    return spark
+    return spark.getOrCreate()
 
 
 @pytest.fixture(scope="session")
@@ -40,11 +65,22 @@ def nested_dataset(spark: SparkSession) -> DataFrame:
 
 @pytest.fixture(scope="session")
 def simple_delta_dataset(spark: SparkSession) -> DataFrame:
-
     return spark.createDataFrame(
         [
-            Row(a=1, b=2.0, c="string1", d=date(2000, 1, 1), e=datetime(2000, 1, 1, 12, 0)),
-            Row(a=2, b=3.0, c="string2", d=date(2000, 2, 1), e=datetime(2000, 1, 2, 12, 0)),
+            Row(
+                a=1,
+                b=2.0,
+                c="string1",
+                d=date(2000, 1, 1),
+                e=datetime(2000, 1, 1, 12, 0),
+            ),
+            Row(
+                a=2,
+                b=3.0,
+                c="string2",
+                d=date(2000, 2, 1),
+                e=datetime(2000, 1, 2, 12, 0),
+            ),
         ]
     )
 

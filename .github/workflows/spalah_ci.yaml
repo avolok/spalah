@@ -32,16 +32,6 @@ jobs:
       - name: Install Dependencies
         run: poetry install --with dev
 
-      - name: Get the list of changed files
-        id: get_list_of_files
-        run:  |
-          git fetch origin main:refs/remotes/origin/main
-          FILES_CHANGED=$(git diff --name-only origin/main)
-
-          echo "Changed files:"
-          echo "$FILES_CHANGED"
-
-          echo "PR_FILES_CHANGED=$( echo $FILES_CHANGED | tr '\n' ' ')" >> $GITHUB_ENV
 
       - name: Install spalah dependencies
         run: poetry install
@@ -49,7 +39,7 @@ jobs:
 
       - uses: pre-commit/action@v2.0.0
         with:
-          extra_args: --files ${{ env.PR_FILES_CHANGED }}
+          extra_args: --all
 
       - name: Test spalah package
         run: poetry run pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
