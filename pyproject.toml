@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "spalah"
-version = "1.0.2"
+version = "1.0.3"
 description = "Spalah is a set of PySpark dataframe helpers"
 homepage = "https://github.com/avolok/spalah"
 authors = ["Alex Volok <alexandr.volok@gmail.com>"]
@@ -38,6 +38,7 @@ twine = "==4.0.1"
 watchdog = "==2.1.9"
 wheel = "*"
 pytest-sugar = "^0.9.7"
+python-semantic-release = "^8.0.8"
 
 [tool.semantic_release]
 version_variable = [    
