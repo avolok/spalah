@@ -4,6 +4,37 @@ from spalah.dataset import DeltaTableConfig
 from pyspark.sql import SparkSession
 
 
+def test_validate_access_by_hive_name_get_properties(spark: SparkSession, tmp_path: Path) -> None:
+    """
+    Tested method must get correctly table properties as a dictionary
+    using hive name as an identifier
+    """
+
+    delta_path = f"{tmp_path}/sample_delta_dataset"
+    hive_name = "sample_delta_dataset"
+    (
+        spark.range(0, 1)
+        .write
+        .format("delta")
+        .mode("overwrite")
+        .option("path", delta_path)
+        .saveAsTable(hive_name)
+    )
+
+    _sql = f"""
+        ALTER TABLE `{hive_name}`
+        SET TBLPROPERTIES (delta.deletedFileRetentionDuration = 'interval 15 days')
+    """
+    spark.sql(_sql)
+
+    dp = DeltaTableConfig(table_name=hive_name, spark_session=spark)
+
+    existing_properties = dp.properties
+
+    assert existing_properties == {
+        "delta.deletedFileRetentionDuration": "interval 15 days"
+    }
+    
 def test_get_delta_properties(spark: SparkSession, tmp_path: Path) -> None:
     """Tested method must get correctly table properties as a dictionary"""
 
@@ -56,6 +87,52 @@ def test_set_table_properties_new_table_no_existing_properties(
     spark.range(0, 1).write.format("delta").mode("overwrite").save(delta_path)
 
     dp = DeltaTableConfig(table_path=delta_path)
+    dp.properties = properties_to_set
+
+    assert properties_to_set == dp.properties
+    
+def test_set_table_properties_exceptions_both_provided_as_identifier() -> None:
+    "When both table_path and table_name provided the exception must occur"
+
+    with pytest.raises(ValueError) as e:
+        DeltaTableConfig(table_path="/some/path", table_name="tbl_name").properties
+    assert str(e.value).startswith("Both 'table_path' and 'table_name' provided")
+
+
+def test_set_table_properties_exceptions_noting_provided_as_identifier() -> None:
+    "When neither table_path nor table_name provided the exception must occur"
+
+    with pytest.raises(ValueError) as e:
+        DeltaTableConfig(table_path="", table_name="").properties
+    assert str(e.value).startswith("Neither 'table_path' nor 'table_name' provided")
+
+
+def test_validate_hive_name_access_set_properties(
+    spark: SparkSession, tmp_path: Path
+) -> None:
+    """
+    Tested method must set correctly table properties to the brand new dataset
+    using hive name as an identifier
+    """
+
+    delta_path = f"{tmp_path}/sample_delta_dataset"
+    hive_name = "sample_delta_dataset_set"
+
+    properties_to_set = {
+        "delta.logRetentionDuration": "interval 10 days",
+        "delta.deletedFileRetentionDuration": "interval 16 days",
+    }
+
+    (
+        spark.range(0, 1)
+        .write
+        .format("delta")
+        .mode("overwrite")
+        .option("path", delta_path)
+        .saveAsTable(hive_name)
+    )
+
+    dp = DeltaTableConfig(table_name=hive_name)
     dp.properties = properties_to_set
 
     assert properties_to_set == dp.properties
