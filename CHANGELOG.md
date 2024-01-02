@@ -2,6 +2,9 @@
 
 <!--next-version-placeholder-->
 
+## v1.0.4 (2024-01-02)
+
+
 ## v1.0.2 (2023-05-22)
 ### Fix
 * Replace name DeltaProperty -> DeltaTableConfig ([#32](https://github.com/avolok/spalah/issues/32)) ([`65d7390`](https://github.com/avolok/spalah/commit/65d73902a24c9cfa601379a7648170150b4c0707))
