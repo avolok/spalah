@@ -76,7 +76,7 @@ class DeltaTableConfig:
         else:
             _identifier = table_name
 
-        if not DeltaTable.isDeltaTable(
+        if table_path and not DeltaTable.isDeltaTable(
             sparkSession=self.spark_session, identifier=_identifier
         ):
             logger.warning(f"{table_name} is not a Delta Table")
