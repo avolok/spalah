@@ -1,4 +1,4 @@
-"""This module contains various dataframe specific functions and classes"""
+""" This module contains various dataframe specific functions and classes"""
 
 import copy
 from collections import namedtuple
