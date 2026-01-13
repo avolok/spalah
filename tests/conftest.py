@@ -7,7 +7,7 @@ from pyspark.sql import DataFrame, Row, SparkSession
 def spark():
     app_name = "spalah-ci"
 
-    spark_jars = "io.delta:delta-core_2.12:2.3.0"
+    spark_jars = "io.delta:delta-spark_2.12:3.2.0"
 
     spark = (
         SparkSession.builder.master("local[*]")
@@ -33,7 +33,7 @@ def spark():
         .config("spark.sql.ui.retainedExecutions", "1")
         .config("spark.worker.ui.retainedExecutors", "1")
         .config("spark.worker.ui.retainedDrivers", "1")
-        .config("spark.driver.memory", "2g")
+        .config("spark.driver.memory", "3g")
         .config("spark.driver.extraJavaOptions", "-Ddelta.log.cacheSize=3")
         .config(
             "spark.driver.extraJavaOptions",

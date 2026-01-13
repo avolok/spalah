@@ -242,3 +242,102 @@ class DeltaTableConfig:
                             f"The constraint {_constraint_name} has been successfully "
                             f"added to '{self.table_name}'"
                         )
+
+    @property
+    def columns(self) -> dict:
+        """
+        Gets dataset's delta table columns and their data types.
+
+        Examples:
+            >>> from spalah.datalake import DeltaTableConfig
+            >>> dp = DeltaTableConfig(table_path="/path/dataset")
+            >>>
+            >>> # get existing columns
+            >>> print(dp.columns)
+            {"id": "int", "name": "string", "age": "int"}
+
+        """
+        _columns = {}
+        keep_extraction = True
+
+        df_columns = self.spark_session.sql(f"DESCRIBE {self.table_name}")
+
+        for record in df_columns.collect():
+            if "# " in record.col_name or record.col_name == "":
+                keep_extraction = False
+
+            if keep_extraction:
+                _columns.update({record.col_name: record.data_type})
+
+        return _columns
+
+    @property
+    def clustering_columns(self) -> dict:
+        """
+        Gets dataset's delta table clustering columns.
+
+        Examples:
+            >>> from spalah.datalake import DeltaTableConfig
+            >>> dp = DeltaTableConfig(table_path="/path/dataset")
+            >>>
+            >>> # get existing clustering columns
+            >>> print(dp.clustering_columns)
+            ["column1", "column2"]
+
+        """
+
+        return (
+            self.spark_session.sql(f"DESCRIBE DETAIL {self.table_name}")
+            .select("clusteringColumns")
+            .first()[0]
+        )
+
+    @property
+    def partition_columns(self) -> dict:
+        """
+        Gets dataset's delta table partition columns.
+
+        Examples:
+            >>> from spalah.datalake import DeltaTableConfig
+            >>> dp = DeltaTableConfig(table_path="/path/dataset")
+            >>>
+            >>> # get existing partition columns
+            >>> print(dp.partition_columns)
+            ["column1", "column2"]
+        """
+
+        return (
+            self.spark_session.sql(f"DESCRIBE DETAIL {self.table_name}")
+            .select("partitionColumns")
+            .first()[0]
+        )
+
+    @property
+    def details(self) -> dict:
+        """
+        Gets dataset's delta table details including columns, properties,
+        constraints, clustering columns and partition columns.
+
+        Examples:
+            >>> from spalah.datalake import DeltaTableConfig
+            >>> dp = DeltaTableConfig(table_path="/path/dataset")
+            >>>
+            >>> # get existing table details
+            >>> print(dp.details)
+            {
+                "columns": {"id": "int", "name": "string", "age": "int"},
+                "properties": {'delta.deletedFileRetentionDuration': 'interval 15 days'},
+                "constraints": {"id_is_not_null": "id is not null"},
+                "clustering_columns": ["column1", "column2"],
+                "partition_columns": ["column1", "column2"]
+            }
+
+        """
+
+        return {
+            "columns": self.columns,
+            "properties": self.properties,
+            "constraints": self.check_constraints,
+            "clustering_columns": self.clustering_columns,
+            "partition_columns": self.partition_columns,
+        }
