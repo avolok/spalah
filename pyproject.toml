@@ -46,7 +46,10 @@ version_variable = [
 build_command = "pip install poetry && poetry build"
 branch = "main"
 version_toml = ["pyproject.toml:tool.poetry.version"]
+changelog_file = "CHANGELOG.md"
 
+[tool.semantic_release.changelog] 
+changelog_file = "CHANGELOG.md"
 
 [tool.semantic_release.changelog.default_templates]
 changelog_file = "CHANGELOG.md"
