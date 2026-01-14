@@ -94,7 +94,7 @@ jobs:
 
       # see https://docs.pypi.org/trusted-publishers/
       - name: Publish package distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@@SHA1_HASH  # vX.X.X
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist
           print-hash: true
