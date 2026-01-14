@@ -1,4 +1,4 @@
-name: Continuous Delivery
+name:  Spalah CD
 
 on:
   push:
@@ -94,9 +94,9 @@ jobs:
       # ------------------------------------------------------------------- #
 
       # see https://docs.pypi.org/trusted-publishers/
-      # - name: Publish package distributions to PyPI
-      #   uses: pypa/gh-action-pypi-publish@@SHA1_HASH  # vX.X.X
-      #   with:
-      #     packages-dir: dist
-      #     print-hash: true
-      #     verbose: true
+      - name: Publish package distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@@SHA1_HASH  # vX.X.X
+        with:
+          packages-dir: dist
+          print-hash: true
+          verbose: true
