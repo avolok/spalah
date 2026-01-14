@@ -45,6 +45,7 @@ version_variable = [
 ]
 build_command = "pip install poetry && poetry build"
 branch = "main"
+version_toml = ["pyproject.toml:tool.poetry.version"]
 
 [tool.ruff]
 line-length = 100
