@@ -2,6 +2,19 @@
 
 <!-- version list -->
 
+## v1.1.7 (2026-01-14)
+
+### Bug Fixes
+
+- Remove unnecessary repo_dir configuration from pyproject.toml
+  ([#52](https://github.com/avolok/spalah/pull/52),
+  [`0ef7ae5`](https://github.com/avolok/spalah/commit/0ef7ae594c54ea479457f52001bbdaf66d62280e))
+
+- Update python-semantic-release to 10.5.3 and enhance configuration
+  ([#51](https://github.com/avolok/spalah/pull/51),
+  [`8f36b38`](https://github.com/avolok/spalah/commit/8f36b38af7afcb0d4ee978db65f546a925c7dfa3))
+
+
 ## v1.1.0 (2026-01-14)
 
 ### Feature
