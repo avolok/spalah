@@ -329,7 +329,7 @@ class DeltaTableConfig:
                 "properties": {'delta.deletedFileRetentionDuration': 'interval 15 days'},
                 "constraints": {"id_check": "id is not null"},
                 "clustering_columns": [],
-                "partition_columns": ["column1", "column2"]
+                "partition_columns": ["id"]
             }
 
         """
