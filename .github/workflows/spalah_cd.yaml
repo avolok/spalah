@@ -1,5 +1,4 @@
 name:  Spalah CD
-
 on:
   push:
     branches:
