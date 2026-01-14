@@ -1,6 +1,5 @@
 ::: spalah.dataframe
     handler: python
-    selection:
-      filters:
-        - "!^__"  
-        - "__init__"  
+    options:
+      filters: public
+      merge_init_into_class: true  
