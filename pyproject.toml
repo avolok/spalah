@@ -11,19 +11,18 @@ classifiers = ["Intended Audience :: Developers", "License :: OSI Approved :: MI
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.8.1,<4.0.0"
-pyspark = ">=3.2.0,<4"
-delta-spark = "2.3.0"
+python = ">=3.11.0,<4.0.0"
 
 [tool.poetry.group.docs.dependencies]
-mkdocs-material = "^9.1.13"
-mkdocstrings = {extras = ["python"], version = "^0.20.0"}
-mkdocs = ">=1.4.3,<1.5.0"
+mkdocs-material = "^9.7.1"
+mkdocstrings-python = "^2.0.0"
+mkdocs = ">=1.6.0,<1.7.0"
 termynal = ">=0.2.1"
 
 
-
 [tool.poetry.group.dev.dependencies]
+pyspark = "==3.5.0,<4"
+delta-spark = "3.2.0"
 black = ">=22.3.0"
 bump2version = ">=1.0.1,<7"
 coverage = ">=6.4.1"
@@ -37,7 +36,7 @@ tox = ">=3.25.0,<4"
 twine = "==4.0.1"
 watchdog = "==2.1.9"
 wheel = "*"
-pytest-sugar = "^0.9.7"
+pytest-sugar = "1.1"
 python-semantic-release = "^8.0.8"
 
 [tool.semantic_release]

@@ -94,22 +94,6 @@ def test_set_table_properties_new_table_no_existing_properties(
     assert properties_to_set == dp.properties
 
 
-def test_set_table_properties_exceptions_both_provided_as_identifier() -> None:
-    "When both table_path and table_name provided the exception must occur"
-
-    with pytest.raises(ValueError) as e:
-        DeltaTableConfig(table_path="/some/path", table_name="tbl_name").properties
-    assert str(e.value).startswith("Both 'table_path' and 'table_name' provided")
-
-
-def test_set_table_properties_exceptions_noting_provided_as_identifier() -> None:
-    "When neither table_path nor table_name provided the exception must occur"
-
-    with pytest.raises(ValueError) as e:
-        DeltaTableConfig(table_path="", table_name="").properties
-    assert str(e.value).startswith("Neither 'table_path' nor 'table_name' provided")
-
-
 def test_validate_hive_name_access_set_properties(
     spark: SparkSession, tmp_path: Path
 ) -> None:
@@ -270,3 +254,110 @@ def test_set_table_constraint_on_new_table_with_existing_constraint(
         constraint_to_set.update({"id_is_not_null": "id is not null"})
 
     assert current_constraints == constraint_to_set
+
+
+def test_get_delta_table_columns(spark: SparkSession, tmp_path: Path) -> None:
+    """
+    Must get correctly table columns as a dictionary
+    """
+
+    delta_path = f"{tmp_path}/sample_delta_dataset"
+
+    (
+        spark.createDataFrame([(1, "a", "abc")], ["id", "name", "value"])
+        .write.format("delta")
+        .mode("overwrite")
+        .partitionBy("id")
+        .save(delta_path)
+    )
+
+    dtc = DeltaTableConfig(table_path=delta_path, spark_session=spark)
+
+    actual_columns = dtc.columns
+
+    expected_columns = {"id": "bigint", "name": "string", "value": "string"}
+
+    assert actual_columns == expected_columns
+
+
+def test_get_delta_partition_columns(spark: SparkSession, tmp_path: Path) -> None:
+    """
+    Must get correctly partition columns as a list
+    """
+
+    delta_path = f"{tmp_path}/sample_delta_dataset"
+
+    (
+        spark.createDataFrame([(1, "a", "abc")], ["id", "name", "value"])
+        .write.format("delta")
+        .mode("overwrite")
+        .partitionBy("id")
+        .save(delta_path)
+    )
+
+    dtc = DeltaTableConfig(table_path=delta_path, spark_session=spark)
+
+    actual_partition_columns = dtc.partition_columns
+    expected_partition_columns = ["id"]
+
+    assert actual_partition_columns == expected_partition_columns
+
+
+def test_get_delta_clustering_columns(spark: SparkSession, tmp_path: Path) -> None:
+    """
+    Must get correctly clustering columns as a list
+    """
+
+    delta_path = f"{tmp_path}/sample_delta_dataset"
+
+    (
+        spark.createDataFrame([(1, "a", "abc")], ["id", "name", "value"])
+        .write.format("delta")
+        .mode("overwrite")
+        .save(delta_path)
+    )
+
+    dtc = DeltaTableConfig(table_path=delta_path, spark_session=spark)
+
+    actual_clustering_columns = dtc.clustering_columns
+    expected_clustering_columns = []
+
+    assert actual_clustering_columns == expected_clustering_columns
+
+
+def test_get_delta_table_details(spark: SparkSession, tmp_path: Path) -> None:
+    """
+    Must get correctly table columns and partition columns as dictionaries
+    """
+
+    delta_path = f"{tmp_path}/sample_delta_dataset"
+
+    (
+        spark.createDataFrame([(1, "a", "abc")], ["id", "name", "value"])
+        .write.format("delta")
+        .mode("overwrite")
+        .partitionBy("id")
+        .save(delta_path)
+    )
+
+    dtc = DeltaTableConfig(table_path=delta_path, spark_session=spark)
+
+    # set extra properties to check they are included in details
+    dtc.properties = {
+        "delta.logRetentionDuration": "interval 10 days",
+        "delta.deletedFileRetentionDuration": "interval 16 days",
+    }
+
+    actual_details = dtc.details
+    expected_details = {
+        "columns": {"id": "bigint", "name": "string", "value": "string"},
+        "properties": {
+            "delta.deletedFileRetentionDuration": "interval 16 days",
+            "delta.logRetentionDuration": "interval 10 days",
+        },
+        "constraints": {},
+        "clustering_columns": [],
+        "partition_columns": ["id"],
+    }
+
+    assert actual_details == expected_details

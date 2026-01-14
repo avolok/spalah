@@ -26,8 +26,7 @@ jobs:
 
       - uses: actions/setup-python@v3
         with:
-          python-version: '3.8'
-          cache: 'poetry'
+          python-version: '3.11'
 
       - name: Install Dependencies
         run: poetry install --with dev
@@ -37,7 +36,7 @@ jobs:
         run: poetry install
         working-directory: ${{env.working-directory}}
 
-      - uses: pre-commit/action@v2.0.0
+      - uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all
 
