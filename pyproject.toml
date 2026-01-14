@@ -40,11 +40,9 @@ pytest-sugar = "1.1"
 python-semantic-release = "^8.0.8"
 
 [tool.semantic_release]
-version_variable = [    
-    "pyproject.toml:version"
-]
+version_toml = ["pyproject.toml:tool.poetry.version"]
 build_command = "pip install poetry && poetry build"
-branch = "main"
+branches = ["main"]
 
 [tool.ruff]
 line-length = 100
