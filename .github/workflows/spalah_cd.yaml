@@ -16,9 +16,7 @@ jobs:
       group: ${{ github.workflow }}-release-${{ github.ref_name }}
       cancel-in-progress: false
 
-    permissions:
-      contents: write
-      permissions: write-all
+    permissions: write-all
 
     steps:
       # Note: We checkout the repository at the branch that triggered the workflow.
