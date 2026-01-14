@@ -26,8 +26,7 @@ jobs:
 
       - uses: actions/setup-python@v3
         with:
-          python-version: '3.8'
-          cache: 'poetry'
+          python-version: '3.11'
 
       - name: Install Dependencies
         run: poetry install --with dev
