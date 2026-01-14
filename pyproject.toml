@@ -1,7 +1,7 @@
 
 [tool.poetry]
 name = "spalah"
-version = "1.0.6"
+version = "1.1.0"
 description = "Spalah is a set of PySpark dataframe helpers"
 homepage = "https://github.com/avolok/spalah"
 authors = ["Alex Volok <alexandr.volok@gmail.com>"]
@@ -40,9 +40,11 @@ pytest-sugar = "1.1"
 python-semantic-release = "^8.0.8"
 
 [tool.semantic_release]
-version_toml = ["pyproject.toml:tool.poetry.version"]
+version_variable = [    
+    "pyproject.toml:version"
+]
 build_command = "pip install poetry && poetry build"
-branches = ["main"]
+branch = "main"
 
 [tool.ruff]
 line-length = 100
