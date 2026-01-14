@@ -47,6 +47,12 @@ build_command = "pip install poetry && poetry build"
 branch = "main"
 version_toml = ["pyproject.toml:tool.poetry.version"]
 
+
+[tool.semantic_release.changelog.default_templates]
+changelog_file = "CHANGELOG.md"
+output_format = "md" # or "md" for Markdown format
+
 [tool.ruff]
 line-length = 100
 fix = true
+
