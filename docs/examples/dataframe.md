@@ -1,10 +1,10 @@
 # Examples of use: spalah.dataframe
 
-This module contains various dataframe specific functions and classes, like `SchemaComparer`, `script_dataframe`, `slice_dataframe` etc. 
+This module contains various dataframe-specific functions and classes, like `SchemaComparer`, `script_dataframe`, `slice_dataframe` etc. 
 
 ### slice_dataframe
 Slice the schema of the dataframe by selecting which attributes must be included and/or excluded.
-The function supports also complex structures and can be helpful for cases when sensitive/PII attributes must be cut off during the data transformation:
+The function also supports complex structures and can be helpful for cases when sensitive/PII attributes must be cut off during the data transformation:
 ```python
 from spalah.dataframe import slice_dataframe
 
@@ -22,7 +22,7 @@ root
  |    |-- Line2: string (nullable = false)
 """
 
-# Create a new dataframe by cutting of root and nested attributes
+# Create a new dataframe by cutting off root and nested attributes
 df_result = slice_dataframe(
     input_dataframe=df,
     columns_to_include=["Name", "Address"],
@@ -59,9 +59,9 @@ df_result.show()
 """
 ```
 
-Beside of nested regular structs it also supported slicing of such in arrays, including multiple levels of nesting.
+Besides nested regular structs it also supports slicing of such in arrays, including multiple levels of nesting.
 
-Following schema example contains
+The following is a schema example with complex nesting:
 
 ```text
 root
@@ -87,7 +87,7 @@ root
 Following snippet will slice the array to contain only the subset of schema, including multiple levels of arrays:
 
 ```python
-df_out = project_dataframe_schema(
+df_out = slice_dataframe(
     input_dataframe=df_h,
    
     columns_to_include=["parent_struct.struct_in_array.c_array.g"],
@@ -112,7 +112,7 @@ root
 Another example inverts the output by excluding a child array element `parent_struct.struct_in_array.c_array`:
 
 ```python
-df_out = project_dataframe_schema(
+df_out = slice_dataframe(
     input_dataframe=df_h,
    
     columns_to_exclude=["parent_struct.struct_in_array.c_array"],
@@ -140,7 +140,7 @@ To see it in action, let's define a sample dataframe
 df_complex_schema = spark.sql(
     'SELECT 1 as ID, "John" AS Name, struct("line1" AS Line1, "line2" AS Line2) AS Address'
 )
-df_source.printSchema()
+df_complex_schema.printSchema()
 
 
 root

@@ -7,7 +7,8 @@ theme:
   palette:    
     # Palette toggle for light mode
     - scheme: default
-      primary: grey
+      primary: deep purple
+      accent: indigo
       toggle:
         icon: material/weather-sunny
         name: Switch to dark mode
@@ -43,7 +44,7 @@ extra:
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/alexandrvolok
 
-copyright: Copyright &copy; 2022 - 2023 Alex Volok
+copyright: Copyright &copy; 2022 - 2026 Alex Volok
 
 # repo_url: https://github.com/avolok/spalah
 
@@ -79,12 +80,11 @@ markdown_extensions:
 
 
 nav:
-  - Spalah: index.md
-  - "Examples":
-    - "spalah.dataframe": examples/dataframe.md
-    - "spalah.dataset": examples/dataset.md
-
+  - Home: index.md
   - "Reference":
-    - "spalah.dataframe": reference/dataframe.md
     - "spalah.dataset.DeltaTableConfig":  reference/dataset/DeltaTableConfig.md
-    - "spalah.dataset.dbfs":  reference/dataset/dbfs.md
+    - "spalah.dataframe": reference/dataframe.md    
+  - "Examples":
+    - "spalah.dataset": examples/dataset.md
+    - "spalah.dataframe": examples/dataframe.md
+    

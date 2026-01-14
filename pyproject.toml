@@ -15,7 +15,7 @@ python = ">=3.11.0,<4.0.0"
 
 [tool.poetry.group.docs.dependencies]
 mkdocs-material = "^9.7.1"
-mkdocstrings = {extras = ["python"], version = "^0.20.0"}
+mkdocstrings-python = "^2.0.0"
 mkdocs = ">=1.6.0,<1.7.0"
 termynal = ">=0.2.1"
 

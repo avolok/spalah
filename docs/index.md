@@ -7,11 +7,11 @@ hide:
 
 Spalah is a set of python helpers to deal with PySpark dataframes, transformations, schemas etc.
 
-It's main feature is to simplify dealing with advanced spark schemas. Think nested structures, arrays, arrays in arrays in nested structures in arrays. Sometimes such schemas happens. Especially if the lakehouses stores ingested json dataset as is.
+Its main feature is to simplify dealing with advanced spark schemas. Think nested structures, arrays, arrays in arrays in nested structures in arrays. Sometimes such schemas happen. Especially if the lakehouses store ingested json dataset as is.
 
 
 
-And.. the word "spalah" means "spark" in Ukrainian 🇺🇦 :)
+The word "spalah" means "spark" in Ukrainian.
 
 <p align="center">
     <a href="https://github.com/avolok/spalah/actions/workflows/spalah_ci.yaml" target="_blank">
@@ -63,7 +63,7 @@ root
  |    |-- Line2: string (nullable = false)
 """
 
-# Create a new dataframe by cutting of root and nested attributes
+# Create a new dataframe by cutting off root and nested attributes
 df_result = slice_dataframe(
     input_dataframe=df,
     columns_to_include=["Name", "Address"],
@@ -79,7 +79,7 @@ root
 """
 ```
 !!! note
-    Beside of nested regular structs it also supported slicing of structs in arrays, including multiple levels of nesting
+    Besides nested regular structs it also supported slicing of structs in arrays, including multiple levels of nesting
 
 
 ### Get list of flattened elements from the complex schema
