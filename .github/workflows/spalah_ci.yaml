@@ -36,7 +36,7 @@ jobs:
         run: poetry install
         working-directory: ${{env.working-directory}}
 
-      - uses: pre-commit/action@v2.0.0
+      - uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all
 
