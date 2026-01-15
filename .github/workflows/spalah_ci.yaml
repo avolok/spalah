@@ -21,27 +21,22 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install poetry
-        run: pipx install poetry
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
 
       - uses: actions/setup-python@v3
         with:
           python-version: '3.11'
 
       - name: Install Dependencies
-        run: poetry install --with dev
-
-
-      - name: Install spalah dependencies
-        run: poetry install
-        working-directory: ${{env.working-directory}}
+        run: uv sync --group dev
 
       - uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all
 
       - name: Test spalah package
-        run: poetry run pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
+        run: uv run pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
 
       - name: Comment coverage
         uses: coroo/pytest-coverage-commentator@v1.0.2
