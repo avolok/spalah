@@ -16,7 +16,7 @@ repos:
       - id: check-ast
       - id: check-merge-conflict
       
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
+  - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: 'v0.14.11'
     hooks:
     # Run the linter.
