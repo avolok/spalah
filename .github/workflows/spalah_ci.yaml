@@ -35,7 +35,6 @@ jobs:
       - uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all
-          cache: true
 
       - name: Test spalah package
         run: uv run pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
