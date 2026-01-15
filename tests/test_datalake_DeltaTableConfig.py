@@ -4,9 +4,7 @@ from spalah.dataset import DeltaTableConfig
 from pyspark.sql import SparkSession
 
 
-def test_validate_access_by_hive_name_get_properties(
-    spark: SparkSession, tmp_path: Path
-) -> None:
+def test_validate_access_by_hive_name_get_properties(spark: SparkSession, tmp_path: Path) -> None:
     """
     Tested method must get correctly table properties as a dictionary
     using hive name as an identifier
@@ -32,9 +30,7 @@ def test_validate_access_by_hive_name_get_properties(
 
     existing_properties = dp.properties
 
-    assert existing_properties == {
-        "delta.deletedFileRetentionDuration": "interval 15 days"
-    }
+    assert existing_properties == {"delta.deletedFileRetentionDuration": "interval 15 days"}
 
 
 def test_get_delta_properties(spark: SparkSession, tmp_path: Path) -> None:
@@ -53,9 +49,7 @@ def test_get_delta_properties(spark: SparkSession, tmp_path: Path) -> None:
 
     existing_properties = dp.properties
 
-    assert existing_properties == {
-        "delta.deletedFileRetentionDuration": "interval 15 days"
-    }
+    assert existing_properties == {"delta.deletedFileRetentionDuration": "interval 15 days"}
 
 
 def test_set_table_properties_exceptions_both_provided_as_identifier() -> None:
@@ -94,9 +88,7 @@ def test_set_table_properties_new_table_no_existing_properties(
     assert properties_to_set == dp.properties
 
 
-def test_validate_hive_name_access_set_properties(
-    spark: SparkSession, tmp_path: Path
-) -> None:
+def test_validate_hive_name_access_set_properties(spark: SparkSession, tmp_path: Path) -> None:
     """
     Tested method must set correctly table properties to the brand new dataset
     using hive name as an identifier
@@ -140,9 +132,7 @@ def test_set_table_properties_new_table_with_existing_properties(
 
     spark.range(0, 1).write.format("delta").mode("overwrite").save(delta_path)
 
-    _sql = (
-        f"ALTER TABLE delta.`{delta_path}` SET TBLPROPERTIES (prop.property1 = 'abc')"
-    )
+    _sql = f"ALTER TABLE delta.`{delta_path}` SET TBLPROPERTIES (prop.property1 = 'abc')"
     spark.sql(_sql)
 
     dp = DeltaTableConfig(table_path=delta_path)
@@ -170,9 +160,7 @@ def test_set_table_properties_new_table_remove_existing(
 
     spark.range(0, 1).write.format("delta").mode("overwrite").save(delta_path)
 
-    _sql = (
-        f"ALTER TABLE delta.`{delta_path}` SET TBLPROPERTIES (prop.property1 = 'abc')"
-    )
+    _sql = f"ALTER TABLE delta.`{delta_path}` SET TBLPROPERTIES (prop.property1 = 'abc')"
     spark.sql(_sql)
 
     dp = DeltaTableConfig(table_path=delta_path)

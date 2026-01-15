@@ -49,9 +49,7 @@ from spalah.dataframe.dataframe import slice_dataframe
             False,
             Row(
                 column_b=2.0,
-                column_c=Row(
-                    column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")
-                ),
+                column_c=Row(column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")),
             ),
         ),
         # "nested structs: exclude"
@@ -63,9 +61,7 @@ from spalah.dataframe.dataframe import slice_dataframe
             False,
             Row(
                 column_a=1,
-                column_c=Row(
-                    column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")
-                ),
+                column_c=Row(column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")),
             ),
         ),
         # "nested structs: exclude, mixed case"
@@ -77,9 +73,7 @@ from spalah.dataframe.dataframe import slice_dataframe
             False,
             Row(
                 column_a=1,
-                column_c=Row(
-                    column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")
-                ),
+                column_c=Row(column_c_1="c1", column_c_2=Row(c_2_2="c_2_2", c_2_3="c_2_3")),
             ),
         ),
         # "nested structs: nullify only for excluded columns"
@@ -366,7 +360,5 @@ def test_slice_dataframe_invalid_parameters3(request):
     dataset = request.getfixturevalue("flat_dataset")
 
     with pytest.raises(Exception) as e:
-        slice_dataframe(
-            input_dataframe=dataset, columns_to_include=["a"], columns_to_exclude=["a"]
-        )
+        slice_dataframe(input_dataframe=dataset, columns_to_include=["a"], columns_to_exclude=["a"])
     assert str(e.value).startswith("At least one column should be listed")

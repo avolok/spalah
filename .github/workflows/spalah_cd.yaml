@@ -35,6 +35,8 @@ jobs:
 
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        with:
+          cache: true
 
       - name: Setup | Force release branch to be at workflow sha
         run: |
@@ -49,6 +51,7 @@ jobs:
           git_committer_name: "github-actions"
           git_committer_email: "actions@users.noreply.github.com"
           changelog: true
+          cache: true
 
       - name: Publish | Upload to GitHub Release Assets
         uses: python-semantic-release/publish-action@v10.5.3

@@ -5,7 +5,7 @@ from collections import namedtuple
 from pprint import pformat, pprint
 from typing import List, Set, Optional, Union
 
-from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import DataFrame
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 
@@ -170,8 +170,7 @@ def __process_schema_node(
 
         _array_element = _transform_array(array_element="x")
         col_expression = (
-            f"transform({__escape(array_path)}, x->{_array_element}) "
-            f"AS {__escape(node_name)}"
+            f"transform({__escape(array_path)}, x->{_array_element}) AS {__escape(node_name)}"
         )
 
     # Regular columns
@@ -190,9 +189,7 @@ def __process_schema_node(
         else:
             node_type = node.dataType.simpleString()
 
-        nullified_col_expression = (
-            f"CAST(NULL AS { node_type })" + f" AS {__escape(node_name)}"
-        )
+        nullified_col_expression = f"CAST(NULL AS {node_type})" + f" AS {__escape(node_name)}"
 
         # flag for further processing that the field is not struct
         is_struct = False
@@ -259,7 +256,6 @@ def slice_dataframe(
     """
 
     projection = []
-    spark = SparkSession.getActiveSession()
 
     # Verification of input parameters:
 
@@ -278,17 +274,11 @@ def slice_dataframe(
 
     if not (type(columns_to_include) is list and type(columns_to_exclude) is list):
         raise TypeError(
-            "The type of parameters 'columns_to_include', 'columns_to_exclude' "
-            "must be a list"
+            "The type of parameters 'columns_to_include', 'columns_to_exclude' must be a list"
         )
 
-    if not all(
-        isinstance(item, str) for item in columns_to_include + columns_to_exclude
-    ):
-        raise TypeError(
-            "Members of 'columns_to_include' and 'columns_to_exclude' "
-            "must be a string"
-        )
+    if not all(isinstance(item, str) for item in columns_to_include + columns_to_exclude):
+        raise TypeError("Members of 'columns_to_include' and 'columns_to_exclude' must be a string")
 
     if debug:
         print("The list of columns to include:")
@@ -327,7 +317,7 @@ def slice_dataframe(
 
     if generate_sql:
         delimiter = ", \n"
-        result = f"SELECT \n{delimiter.join( projection)} \nFROM {_table_identifier}"
+        result = f"SELECT \n{delimiter.join(projection)} \nFROM {_table_identifier}"
     else:
         result = _input_dataframe.selectExpr(*projection)
 
@@ -391,9 +381,7 @@ def flatten_schema(
     return columns
 
 
-def script_dataframe(
-    input_dataframe: DataFrame, suppress_print_output: bool = True
-) -> str:
+def script_dataframe(input_dataframe: DataFrame, suppress_print_output: bool = True) -> str:
     """Generate a script to recreate the dataframe
     The script includes the schema and the data
 
@@ -420,8 +408,7 @@ def script_dataframe(
 
     if __dataframe.count() > MAX_ROWS_IN_SCRIPT:
         raise ValueError(
-            "This method is limited to script up "
-            f"to {MAX_ROWS_IN_SCRIPT} row(s) per call"
+            f"This method is limited to script up to {MAX_ROWS_IN_SCRIPT} row(s) per call"
         )
 
     __schema = input_dataframe.schema.jsonValue()
@@ -462,9 +449,7 @@ class SchemaComparer:
     and not matched columns.
     """
 
-    def __init__(
-        self, source_schema: T.StringType, target_schema: T.StringType
-    ) -> None:
+    def __init__(self, source_schema: T.StringType, target_schema: T.StringType) -> None:
         """Constructs all the necessary input attributes for the SchemaComparer object.
 
         Args:
@@ -615,13 +600,9 @@ class SchemaComparer:
     def __process_remaining_non_matched_columns(self) -> None:
         """Process remaining not matched columns"""
 
-        self.__populate_not_matched(
-            self._source, "The column exists only in the source schema"
-        )
+        self.__populate_not_matched(self._source, "The column exists only in the source schema")
 
-        self.__populate_not_matched(
-            self._target, "The column exists only in the target schema"
-        )
+        self.__populate_not_matched(self._target, "The column exists only in the target schema")
 
         self.__remove_matched_by_name(self._source)
         self.__remove_matched_by_name(self._target)

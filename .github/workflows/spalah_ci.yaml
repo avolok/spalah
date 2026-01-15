@@ -31,13 +31,18 @@ jobs:
 
       - name: Install Dependencies
         run: uv sync --group dev
+        with:
+          cache: true
 
       - uses: pre-commit/action@v3.0.1
         with:
           extra_args: --all
+          cache: true
 
       - name: Test spalah package
         run: uv run pytest --cache-clear --cov=spalah tests/ > pytest-coverage.txt
 
       - name: Comment coverage
         uses: coroo/pytest-coverage-commentator@v1.0.2
+        with:
+          cache: true
