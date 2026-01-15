@@ -6,6 +6,7 @@ on:
       - "spalah/**"
       - "tests/**"
       - ".github/workflows/spalah_ci.yaml"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.ref }}
