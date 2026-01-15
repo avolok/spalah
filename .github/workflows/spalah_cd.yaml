@@ -33,6 +33,9 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
       - name: Setup | Force release branch to be at workflow sha
         run: |
           git reset --hard ${{ github.sha }}
