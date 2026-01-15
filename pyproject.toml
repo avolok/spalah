@@ -30,6 +30,8 @@ dev = [
     "pytest-sugar==1.1.1",
 ]
 
+[project.optional-dependencies]
+build = ["uv ~= 0.9.25"]
 
 [tool.semantic_release]
 
@@ -44,7 +46,13 @@ no_git_verify = false
 tag_format = "v{version}"
 add_partial_tags = false
 
-build_command = "uv build"
+build_command = """
+    python -m pip install -e '.[build]'
+    uv lock --upgrade-package "$PACKAGE_NAME"
+    git add uv.lock
+    uv build
+"""
+
 branch = "main"
 version_toml = ["pyproject.toml:project.version"]
 changelog_file = "CHANGELOG.md"
