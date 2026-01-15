@@ -1,7 +1,7 @@
 
 [project]
 name = "spalah"
-version = "1.1.7"
+version = "1.1.8"
 description = "Spalah is a set of PySpark dataframe helpers"
 authors = [
      {  name = "Alex Volok", email = "alexandr.volok@gmail.com"},

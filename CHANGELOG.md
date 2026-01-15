@@ -2,6 +2,39 @@
 
 <!-- version list -->
 
+## v1.1.8 (2026-01-15)
+
+### Bug Fixes
+
+- Remove unnecessary python lib dependencies ([#55](https://github.com/avolok/spalah/pull/55),
+  [`fb562c0`](https://github.com/avolok/spalah/commit/fb562c072c8050f1f56ec3c97214b5c8c5066dde))
+
+### Continuous Integration
+
+- Add step to install uv in CD pipeline ([#56](https://github.com/avolok/spalah/pull/56),
+  [`9be2167`](https://github.com/avolok/spalah/commit/9be2167313451183b9b87402076f93b9d11eafa6))
+
+- Add workflow_dispatch trigger to CI, CD, and docs workflows
+  ([#53](https://github.com/avolok/spalah/pull/53),
+  [`764b486`](https://github.com/avolok/spalah/commit/764b486ccb6e92be7d99b28dcf013c376419d976))
+
+- Migration to uv and Dependency Management Updates
+  ([#53](https://github.com/avolok/spalah/pull/53),
+  [`764b486`](https://github.com/avolok/spalah/commit/764b486ccb6e92be7d99b28dcf013c376419d976))
+
+- Move from poetry to uv ([#53](https://github.com/avolok/spalah/pull/53),
+  [`764b486`](https://github.com/avolok/spalah/commit/764b486ccb6e92be7d99b28dcf013c376419d976))
+
+- Update build command and add optional dependencies for uv
+  ([#57](https://github.com/avolok/spalah/pull/57),
+  [`ce27582`](https://github.com/avolok/spalah/commit/ce27582df52dd28a69d844021802782fd6c513f8))
+
+### Documentation
+
+- Fix docs documentation dependencies ([#54](https://github.com/avolok/spalah/pull/54),
+  [`e472b91`](https://github.com/avolok/spalah/commit/e472b91693855f280dcebf4a055e0f039d86ea53))
+
+
 ## v1.1.7 (2026-01-14)
 
 ### Bug Fixes
