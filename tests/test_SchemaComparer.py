@@ -96,5 +96,5 @@ def test_SchemaComparer_compare_exception_passed_string(
         )
         schema_comparer.compare()
     assert str(e.value).startswith(
-        "Parameters 'source_schema and 'target_schema' " "must have a type: StructType"
+        "Parameters 'source_schema and 'target_schema' must have a type: StructType"
     )

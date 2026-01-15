@@ -45,12 +45,8 @@ class DeltaTableConfig:
             {'delta.deletedFileRetentionDuration': 'interval 15 days'}
         """
 
-        self.spark_session = (
-            SparkSession.getActiveSession() if not spark_session else spark_session
-        )
-        self.table_name = self.__get_table_identifier(
-            table_path=table_path, table_name=table_name
-        )
+        self.spark_session = SparkSession.getActiveSession() if not spark_session else spark_session
+        self.table_name = self.__get_table_identifier(table_path=table_path, table_name=table_name)
         self.original_table_name = table_name
 
     def __get_table_identifier(
@@ -61,14 +57,10 @@ class DeltaTableConfig:
         """Constructs table identifier from provided values."""
 
         if table_path and table_name:
-            raise ValueError(
-                "Both 'table_path' and 'table_name' provided. Use one of them."
-            )
+            raise ValueError("Both 'table_path' and 'table_name' provided. Use one of them.")
 
         if not table_path and not table_name:
-            raise ValueError(
-                "Neither 'table_path' nor 'table_name' provided. Use one of them."
-            )
+            raise ValueError("Neither 'table_path' nor 'table_name' provided. Use one of them.")
 
         if table_path:
             table_name = f"delta.`{table_path}`"
@@ -138,18 +130,14 @@ class DeltaTableConfig:
                 if k in _existing_properties and _existing_properties[k] == str(v):
                     logger.info("The property already exists on the table")
                 else:
-                    _sql = (
-                        f"ALTER TABLE {self.table_name} SET TBLPROPERTIES ({k} = '{v}')"
-                    )
+                    _sql = f"ALTER TABLE {self.table_name} SET TBLPROPERTIES ({k} = '{v}')"
                     self.spark_session.sql(_sql)
                     logger.info("The property has been set")
 
             if not self.keep_existing_properties:
                 for k, v in _existing_properties.items():
                     if k not in _new_properties:
-                        _sql = (
-                            f"ALTER TABLE {self.table_name} UNSET TBLPROPERTIES ({k})"
-                        )
+                        _sql = f"ALTER TABLE {self.table_name} UNSET TBLPROPERTIES ({k})"
                         self.spark_session.sql(_sql)
                         logger.info(
                             f"The property '{k} = {v}' has been unset because it is not defined in "
@@ -223,9 +211,7 @@ class DeltaTableConfig:
                 )
 
                 if _constraint_name in _existing_constraints:
-                    logger.info(
-                        f"The constraint '{_constraint_name}' already exists on the table"
-                    )
+                    logger.info(f"The constraint '{_constraint_name}' already exists on the table")
                 else:
                     if v in _existing_constraints.values():
                         logger.warning(
