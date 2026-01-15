@@ -7,7 +7,7 @@ theme:
   palette:    
     # Palette toggle for light mode
     - scheme: default
-      primary: deep purple
+      primary: blue grey
       accent: indigo
       toggle:
         icon: material/weather-sunny
