@@ -33,7 +33,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install Dependencies
-        run: uv sync --group docs; uv pip install -e .
+        run: uv sync --no-dev --group docs; uv pip install -e .
 
       - name: Prepare branch gh-pages
         if: ${{false}}
