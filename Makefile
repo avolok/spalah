@@ -5,9 +5,15 @@ dev_docs:
 	mkdocs serve --livereload
 
 create_env:
-	poetry env use python3.11	
-	poetry lock
-	poetry install --all-groups
+	curl -LsSf https://astral.sh/uv/install.sh | sh
+	uv venv -p python3.11
+	uv sync --group dev --group docs;
+	@echo ""
+	@echo "Virtual environment created."
+	@echo "Run this command to activate the virtual environment:"
+	@echo "source .venv/bin/activate"
+
 
 drop_env:
-	poetry env remove python3.11
+	rm -rf .venv
+
