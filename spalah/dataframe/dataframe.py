@@ -3,9 +3,9 @@
 import copy
 from collections import namedtuple
 from pprint import pformat, pprint
-from typing import List, Set, Optional, Union
+from typing import List, Set, Optional
 
-from pyspark.sql import DataFrame
+from pyspark.sql import DataFrame, Column
 from pyspark.sql import functions as F
 from pyspark.sql import types as T
 
@@ -29,12 +29,12 @@ def __escape(col_name: str) -> str:
 def __process_schema_node(
     node: T.StructField,
     column_prefix: str = "",
-    columns_to_include: Optional[list] = None,  # type: ignore
-    columns_to_exclude: Optional[list] = None,  # type: ignore
+    columns_to_include: List | None = None,
+    columns_to_exclude: List | None = None,
     nullify_only: bool = False,
-    array_element: Optional[F.col] = None,
+    array_element: Column | str | None = None,
     debug: bool = False,
-) -> Union[F.lit, str, None]:
+) -> Column | str | None:
     """Internal function to process a node of the schema
 
     Args:
@@ -58,6 +58,9 @@ def __process_schema_node(
     is_struct_without_children = False
     is_struct = True
     include_this_node = False
+
+    columns_to_include = [] if columns_to_include is None else columns_to_include
+    columns_to_exclude = [] if columns_to_exclude is None else columns_to_exclude
 
     column_prefix = node_name if column_prefix == "" else f"{column_prefix}.{node_name}"
 
@@ -129,7 +132,7 @@ def __process_schema_node(
     ):
         children = []
 
-        def _transform_array(array_element: F.col) -> F.col:
+        def _transform_array(array_element: Column | str) -> Column | str | None:
             """Internal function to process elements of an array
             one by one and return the transformed array
 
@@ -142,8 +145,8 @@ def __process_schema_node(
 
             # converts schema node array(struct()) -> struct()
             struct_in_array_node = copy.deepcopy(node)
-            struct_in_array_node.dataType = node.dataType.elementType
-            struct_in_array_node.struct_in_array = True
+            struct_in_array_node.dataType = node.dataType.elementType  # ty:ignore[possibly-missing-attribute]
+            struct_in_array_node.struct_in_array = True  # ty:ignore[unresolved-attribute]
 
             # removes the name of the array node from the element path
             # because the existence of the array does not create a new level in the path
@@ -215,7 +218,7 @@ def slice_dataframe(
     nullify_only: bool = False,
     generate_sql: bool = False,
     debug: bool = False,
-) -> DataFrame:
+) -> DataFrame | str:
     """Process flat or nested schema of the dataframe by slicing the schema
     or nullifying columns
 
@@ -449,12 +452,12 @@ class SchemaComparer:
     and not matched columns.
     """
 
-    def __init__(self, source_schema: T.StringType, target_schema: T.StringType) -> None:
+    def __init__(self, source_schema: T.StructType, target_schema: T.StructType) -> None:
         """Constructs all the necessary input attributes for the SchemaComparer object.
 
         Args:
-            source_schema (T.StringType): source schema to match
-            target_schema (T.StringType): target schema to match
+            source_schema (T.StructType): source schema to match
+            target_schema (T.StructType): target schema to match
 
         Examples:
             >>> from spalah.dataframe import SchemaComparer
@@ -549,8 +552,8 @@ class SchemaComparer:
                 if x.lower() not in [z[0].lower() for z in subtract_value]
             }
 
-        self._source = _remove(self._source, subtract_value)  # type: ignore
-        self._target = _remove(self._target, subtract_value)  # type: ignore
+        self._source = _remove(self._source, subtract_value)
+        self._target = _remove(self._target, subtract_value)
 
     def __lower_column_names(self, base_value: Set[tuple]) -> Set[tuple]:
         """Lower-case all column names of the input set
@@ -584,16 +587,16 @@ class SchemaComparer:
     def __match_by_name_but_not_type(self) -> None:
         """Matches columns in source and target schemas only by column name"""
 
-        x = dict(self._source)  # type: ignore
-        y = dict(self._target)  # type: ignore
+        x = dict(self._source)
+        y = dict(self._target)
 
         result = {(k, f"{x[k]} <=> {y[k]}") for k in x if k in y and x[k] != y[k]}
 
         # Remove matched values of case 3 from further processing
-        self.__remove_matched_by_name(result)  # type: ignore
+        self.__remove_matched_by_name(result)
 
         self.__populate_not_matched(
-            result,  # type: ignore
+            result,
             "The column exists in source and target schemas but it is not matched by a data type",
         )
 

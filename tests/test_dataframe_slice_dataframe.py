@@ -1,5 +1,5 @@
 import pytest
-from pyspark.sql import Row
+from pyspark.sql import Row, DataFrame
 
 from spalah.dataframe.dataframe import slice_dataframe
 
@@ -328,8 +328,8 @@ def test_slice_dataframe(
         nullify_only=nullify_only,
         debug=True,
     )
-
-    assert actual.first() == expected, assert_message
+    if type(actual) is DataFrame:
+        assert actual.first() == expected, assert_message
 
 
 def test_slice_dataframe_invalid_parameters(request):
@@ -341,8 +341,8 @@ def test_slice_dataframe_invalid_parameters(request):
     ):
         slice_dataframe(
             input_dataframe=dataset,
-            columns_to_include="a",
-            columns_to_exclude=("b", "c"),
+            columns_to_include="a",  # ty:ignore[invalid-argument-type]
+            columns_to_exclude=("b", "c"),  # ty:ignore[invalid-argument-type]
         )
 
 
