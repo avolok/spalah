@@ -2,6 +2,30 @@
 
 <!-- version list -->
 
+## v1.1.9 (2026-01-17)
+
+### Bug Fixes
+
+- Revised code by enabling TY checks ([#59](https://github.com/avolok/spalah/pull/59),
+  [`c781b11`](https://github.com/avolok/spalah/commit/c781b110feb0a9bec70d91fd728565f8734ace0c))
+
+- Update target_schema argument to accept DataFrame in exception test
+  ([#59](https://github.com/avolok/spalah/pull/59),
+  [`c781b11`](https://github.com/avolok/spalah/commit/c781b110feb0a9bec70d91fd728565f8734ace0c))
+
+### Continuous Integration
+
+- Migrate pre-commit to ruff exclusively ([#58](https://github.com/avolok/spalah/pull/58),
+  [`59b2099`](https://github.com/avolok/spalah/commit/59b20991f69c5615c4cd6b7da29556f8874fa89e))
+
+- Remove cache options from install steps in CI and CD workflows
+  ([#58](https://github.com/avolok/spalah/pull/58),
+  [`59b2099`](https://github.com/avolok/spalah/commit/59b20991f69c5615c4cd6b7da29556f8874fa89e))
+
+- Remove caching option from pre-commit action ([#58](https://github.com/avolok/spalah/pull/58),
+  [`59b2099`](https://github.com/avolok/spalah/commit/59b20991f69c5615c4cd6b7da29556f8874fa89e))
+
+
 ## v1.1.8 (2026-01-15)
 
 ### Bug Fixes
