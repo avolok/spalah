@@ -74,7 +74,7 @@ def test_SchemaComparer_compare_exception_passed_dataframe(
     with pytest.raises(Exception) as e:
         schema_comparer = SchemaComparer(
             source_schema=df1.schema,
-            target_schema=df1.schema,  # Dataframe passed instead of StructType (schema)
+            target_schema=df1,  # Dataframe passed instead of StructType (schema)  # ty:ignore[invalid-argument-type]
         )
         schema_comparer.compare()
     assert str(e.value).startswith(
