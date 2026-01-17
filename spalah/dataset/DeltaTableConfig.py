@@ -1,6 +1,6 @@
 from delta import DeltaTable
 from pyspark.sql import SparkSession
-from typing import Union
+from typing import Union, Dict
 from spalah.shared.logging import get_logger
 
 
@@ -26,7 +26,7 @@ class DeltaTableConfig:
         self,
         table_path: str = "",
         table_name: str = "",
-        spark_session: SparkSession = None,
+        spark_session: SparkSession | None = None,
     ) -> None:
         """
         Args:
@@ -45,7 +45,17 @@ class DeltaTableConfig:
             {'delta.deletedFileRetentionDuration': 'interval 15 days'}
         """
 
-        self.spark_session = SparkSession.getActiveSession() if not spark_session else spark_session
+        if spark_session is None:
+            spark = SparkSession.getActiveSession()
+            if spark is None:
+                raise ValueError(
+                    "No active Spark session found. Please provide a valid SparkSession."
+                )
+            else:
+                self.spark_session: SparkSession = spark
+        else:
+            self.spark_session: SparkSession = spark_session
+
         self.table_name = self.__get_table_identifier(table_path=table_path, table_name=table_name)
         self.original_table_name = table_name
 
@@ -77,11 +87,11 @@ class DeltaTableConfig:
         return table_name
 
     @property
-    def properties(self) -> Union[dict, None]:
+    def properties(self) -> Dict:
         """Gets/sets dataset's delta table properties.
 
         Args:
-            value (dict):  An input dictionary in the format: `{"property_name": "value"}`
+            value (Dict):  An input dictionary in the format: `{"property_name": "value"}`
 
         Examples:
             >>> from spalah.datalake import DeltaTableConfig
@@ -103,7 +113,7 @@ class DeltaTableConfig:
                 .asDict()["properties"]
             )
         else:
-            existing_properties = None
+            existing_properties = {}
 
         return existing_properties
 
@@ -145,12 +155,11 @@ class DeltaTableConfig:
                         )
 
     @property
-    def check_constraints(self) -> Union[dict, None]:
+    def check_constraints(self) -> Dict:
         """Gets/sets dataset's delta table check constraints.
 
         Args:
-            value (dict):  An input dictionary in the format: `{"property_name": "value"}`
-
+            value (Dict):  An input dictionary in the format: `{"property_name": "value"}`
         Examples:
             >>> from spalah.datalake import DeltaTableConfig
             >>> dp = DeltaTableConfig(table_path="/path/dataset")
@@ -170,8 +179,6 @@ class DeltaTableConfig:
                 if k.startswith("delta.constraints."):
                     _new_key = k.replace("delta.constraints.", "")
                     _constraints[_new_key] = v
-        else:
-            _constraints = None
 
         return _constraints
 
@@ -275,7 +282,7 @@ class DeltaTableConfig:
         return (
             self.spark_session.sql(f"DESCRIBE DETAIL {self.table_name}")
             .select("clusteringColumns")
-            .first()[0]
+            .first()[0]  # ty:ignore[not-subscriptable]
         )
 
     @property
@@ -295,7 +302,7 @@ class DeltaTableConfig:
         return (
             self.spark_session.sql(f"DESCRIBE DETAIL {self.table_name}")
             .select("partitionColumns")
-            .first()[0]
+            .first()[0]  # ty:ignore[not-subscriptable]
         )
 
     @property

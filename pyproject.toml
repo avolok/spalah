@@ -23,11 +23,12 @@ dev = [
     "pyspark==3.5.0,<4",
     "delta-spark==3.2.0",
     "coverage>=6.4.1",
-    "pre-commit>=4.5.0,<5",
+    "pre-commit>=4.5.1,<5",
     "pytest>=9.0.0,<10",
     "pytest-cov>=7.0.0,<8",
     "ruff>=0.14.0",
     "pytest-sugar==1.1.1",
+    "ty>=0.0.12",
 ]
 
 [project.optional-dependencies]
