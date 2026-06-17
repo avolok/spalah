@@ -117,6 +117,18 @@ wheels = [
 ]
 
 [[package]]
+name = "chispa"
+version = "0.12.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "prettytable" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/80/6b/271e73b92c72ae4c4223a9e98ec5d7c8cb6349f33e33e64a2688116751b7/chispa-0.12.0.tar.gz", hash = "sha256:4dcf4de9481979af77f8d697cb0f27f2599c21244537b4995204cdc529ce9a1b", size = 19726, upload-time = "2026-03-24T13:53:27.44Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/80/19/9a431f9f52cbaa5ba5b0d46f489337f51948cf579cb7eea7137c675fdb73/chispa-0.12.0-py3-none-any.whl", hash = "sha256:e7a04239d5edf2001f3d5b1f349ce6378233684901915e8c984609ea5837f91d", size = 20977, upload-time = "2026-03-24T13:53:26.323Z" },
+]
+
+[[package]]
 name = "click"
 version = "8.1.8"
 source = { registry = "https://pypi.org/simple" }
@@ -612,6 +624,18 @@ wheels = [
 ]
 
 [[package]]
+name = "prettytable"
+version = "3.17.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "wcwidth" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/79/45/b0847d88d6cfeb4413566738c8bbf1e1995fad3d42515327ff32cc1eb578/prettytable-3.17.0.tar.gz", hash = "sha256:59f2590776527f3c9e8cf9fe7b66dd215837cca96a9c39567414cbc632e8ddb0", size = 67892, upload-time = "2025-11-14T17:33:20.212Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ee/8c/83087ebc47ab0396ce092363001fa37c17153119ee282700c0713a195853/prettytable-3.17.0-py3-none-any.whl", hash = "sha256:aad69b294ddbe3e1f95ef8886a060ed1666a0b83018bbf56295f6f226c43d287", size = 34433, upload-time = "2025-11-14T17:33:19.093Z" },
+]
+
+[[package]]
 name = "py4j"
 version = "0.10.9.7"
 source = { registry = "https://pypi.org/simple" }
@@ -679,6 +703,19 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/5e/f7/c933acc76f5208b3b00089573cf6a2bc26dc80a8aece8f52bb7d6b1855ca/pytest_cov-7.0.0.tar.gz", hash = "sha256:33c97eda2e049a0c5298e91f519302a1334c26ac65c1a483d6206fd458361af1", size = 54328, upload-time = "2025-09-09T10:57:02.113Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ee/49/1377b49de7d0c1ce41292161ea0f721913fa8722c19fb9c1e3aa0367eecb/pytest_cov-7.0.0-py3-none-any.whl", hash = "sha256:3b8e9558b16cc1479da72058bdecf8073661c7f57f7d3c5f22a1c23507f2d861", size = 22424, upload-time = "2025-09-09T10:57:00.695Z" },
+]
+
+[[package]]
+name = "pytest-pyspark-utils"
+version = "1.0.3"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "chispa" },
+    { name = "pytest" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e9/19/56be0a9a1d3de2c3035725033f181ad42177f0753d6448c15b23e8b9bc15/pytest_pyspark_utils-1.0.3.tar.gz", hash = "sha256:34e9e872c96e22af9b7cc92c1a32fd504a11a914f4f9077ca299bfe0c825e682", size = 50380, upload-time = "2026-05-20T12:51:10.727Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/d1/72/391453ab52f44eb447cf552daabbd6b13f02fdbad628d0b5e2784dee4690/pytest_pyspark_utils-1.0.3-py3-none-any.whl", hash = "sha256:39787378d4e66725bac59d1cba131ca5f3a8ca5ea085fc54373df9418bd337c9", size = 36863, upload-time = "2026-05-20T12:51:09.026Z" },
 ]
 
 [[package]]
@@ -841,6 +878,7 @@ dev = [
     { name = "pyspark" },
     { name = "pytest" },
     { name = "pytest-cov" },
+    { name = "pytest-pyspark-utils" },
     { name = "pytest-sugar" },
     { name = "ruff" },
     { name = "ty" },
@@ -864,6 +902,7 @@ dev = [
     { name = "pyspark", specifier = "==3.5.0,<4" },
     { name = "pytest", specifier = ">=9.0.0,<10" },
     { name = "pytest-cov", specifier = ">=7.0.0,<8" },
+    { name = "pytest-pyspark-utils", specifier = "==1.0.3" },
     { name = "pytest-sugar", specifier = "==1.1.1" },
     { name = "ruff", specifier = ">=0.14.0" },
     { name = "ty", specifier = ">=0.0.12" },
@@ -1040,6 +1079,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/dd/d2/3470040cbf4abb86c173f60fe73f4b568cc4d37ea3d60d51795dd631afbb/watchdog-2.1.9-py3-none-win32.whl", hash = "sha256:5952135968519e2447a01875a6f5fc8c03190b24d14ee52b0f4b1682259520b1", size = 78394, upload-time = "2022-06-10T10:29:01.049Z" },
     { url = "https://files.pythonhosted.org/packages/61/3f/a2fc9452b8161862a78674fda583d8e1addbbecf57a1e172b4a7a96e8087/watchdog-2.1.9-py3-none-win_amd64.whl", hash = "sha256:7a833211f49143c3d336729b0020ffd1274078e94b0ae42e22f596999f50279c", size = 78398, upload-time = "2022-06-10T10:29:03.093Z" },
     { url = "https://files.pythonhosted.org/packages/eb/15/e1a0c11f137fe05f593288fe735f8cd28c9b2f398e0c08623977dce81921/watchdog-2.1.9-py3-none-win_ia64.whl", hash = "sha256:ad576a565260d8f99d97f2e64b0f97a48228317095908568a9d5c786c829d428", size = 78399, upload-time = "2022-06-10T10:29:04.682Z" },
+]
+
+[[package]]
+name = "wcwidth"
+version = "0.8.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/49/b4/51fe890511f0f242d07cb1ebe6a5b6db417262b9d2568b460347c57d95cc/wcwidth-0.8.1.tar.gz", hash = "sha256:faf5b4a5366a72dc49cad48cdf21f52bdf63bdda995178e483ba247ff79089b9", size = 1466072, upload-time = "2026-06-08T05:57:23.146Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bd/6e/95b0e537de1f4d4301f76f944642c6da50d1511cc7b3d64dc418a66c7509/wcwidth-0.8.1-py3-none-any.whl", hash = "sha256:f453740b1e4a4f3291faa37944c555d71056c4da08d59809b307ef4feba695c8", size = 323092, upload-time = "2026-06-08T05:57:21.413Z" },
 ]
 
 [[package]]

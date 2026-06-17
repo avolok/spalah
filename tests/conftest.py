@@ -4,47 +4,6 @@ from pyspark.sql import DataFrame, Row, SparkSession
 
 
 @pytest.fixture(scope="session")
-def spark():
-    app_name = "spalah-ci"
-
-    spark_jars = "io.delta:delta-spark_2.12:3.2.0"
-
-    spark = (
-        SparkSession.builder.master("local[*]")
-        .appName(app_name)
-        .config("spark.jars.packages", spark_jars)
-        .config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
-        .config(
-            "spark.sql.catalog.spark_catalog",
-            "org.apache.spark.sql.delta.catalog.DeltaCatalog",
-        )
-    )
-
-    # to speed up tests
-    spark = (
-        spark.config("spark.sql.shuffle.partitions", "1")
-        .config("spark.databricks.delta.snapshotPartitions", "2")
-        .config("spark.ui.showConsoleProgress", "false")
-        .config("spark.ui.enabled", "false")
-        .config("spark.ui.dagGraph.retainedRootRDDs", "1")
-        .config("spark.ui.retainedJobs", "1")
-        .config("spark.ui.retainedStages", "1")
-        .config("spark.ui.retainedTasks", "1")
-        .config("spark.sql.ui.retainedExecutions", "1")
-        .config("spark.worker.ui.retainedExecutors", "1")
-        .config("spark.worker.ui.retainedDrivers", "1")
-        .config("spark.driver.memory", "3g")
-        .config("spark.driver.extraJavaOptions", "-Ddelta.log.cacheSize=3")
-        .config(
-            "spark.driver.extraJavaOptions",
-            "-XX:+CMSClassUnloadingEnabled -XX:+UseCompressedOops",
-        )
-    )
-
-    return spark.getOrCreate()
-
-
-@pytest.fixture(scope="session")
 def nested_dataset(spark: SparkSession) -> DataFrame:
     return spark.sql(
         """
